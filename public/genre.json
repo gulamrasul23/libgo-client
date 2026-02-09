@@ -1,0 +1,49 @@
+[
+  {
+    "genre": "Fiction",
+    "description": "Imaginative tales beyond reality.",
+    "image": "https://i.ibb.co.com/C3gztFH8/Screenshot-2026-02-07-010726.png"
+  },
+  {
+    "genre": "Thriller",
+    "description": "Dark secrets and suspense.",
+    "image": "https://i.ibb.co.com/N2gy4WKZ/Screenshot-2026-02-07-010626.png"
+  },
+  {
+    "genre": "History",
+    "description": "Journeys through past eras.",
+    "image": "https://i.ibb.co.com/ds0b04G1/Screenshot-2026-02-07-010802.png"
+  },
+  {
+    "genre": "Romance",
+    "description": "Heartwarming love stories.",
+    "image": "https://i.ibb.co.com/xSk4ZmSm/Screenshot-2026-02-07-010857.png"
+  },
+  
+  {
+    "genre": "Sci-Fi",
+    "description": "Futuristic worlds and technology.",
+    "image": "https://i.ibb.co.com/5XK0ZsdP/Screenshot-2026-02-07-025605.png"
+  },
+  {
+    "genre": "Fantasy",
+    "description": "Magic, dragons, and epic quests.",
+    "image": "https://i.ibb.co.com/7NNFycDq/Screenshot-2026-02-07-025649.png"
+  },
+  {
+    "genre": "Self-Help",
+    "description": "Guide to personal growth.",
+    "image": "https://i.ibb.co.com/bggSrB98/Screenshot-2026-02-07-025726.png"
+  },
+  {
+    "genre": "Horror",
+    "description": "Chilling tales of terror.",
+    "image": "https://i.ibb.co.com/5WYchv3y/Screenshot-2026-02-07-025755.png"
+  },
+  {
+    "genre": "Biography",
+    "description": "Real lives, real stories.",
+    "image": "https://i.ibb.co.com/cc2yWr6H/Screenshot-2026-02-07-025829.png"
+  }
+
+]
