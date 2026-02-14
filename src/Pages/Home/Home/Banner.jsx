@@ -1,12 +1,28 @@
-import { use } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
 import { Link } from "react-router";
 
-const slidesPromise = fetch('/slide.json').then(res => res.json());
-
 const Banner = () => {
-  const slides = use(slidesPromise);
+  const slides = [
+    {
+      "id": 1,
+      "image": "/images/slide2.png",
+      "title": "The Classics Collection",
+      "description": "Revisit the timeless tales that shaped the world. From Austen to Orwell, discover our premium hardcover sets."
+    },
+    {
+      "id": 2,
+      "image": "/images/slide1.png",
+      "title": "New Arrivals: Sci-Fi",
+      "description": "Explore new worlds and future technologies. The latest science fiction hits are now in stock and ready to ship."
+    },
+    {
+      "id": 3,
+      "image": "/images/slide3.png",
+      "title": "Academic & Research",
+      "description": "Find the best resources for your studies. Comprehensive collections for students and researchers."
+    }
+  ]
   return (
     <div className="text-white pt-16 text-[20px] w-full max-w-7xl mx-auto">
       <Carousel

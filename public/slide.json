@@ -1,20 +1,20 @@
 [
   {
     "id": 1,
-    "image":"../src/assets/slide2.png",
-    "title":"The Classics Collection",
-    "description":"Revisit the timeless tales that shaped the world. From Austen to Orwell, discover our premium hardcover sets."
+    "image": "/images/slide2.png",
+    "title": "The Classics Collection",
+    "description": "Revisit the timeless tales that shaped the world. From Austen to Orwell, discover our premium hardcover sets."
   },
   {
     "id": 2,
-    "image":"../src/assets/slide1.png",
-    "title":"New Arrivals: Sci-Fi",
-    "description":"Explore new worlds and future technologies. The latest science fiction hits are now in stock and ready to ship."
+    "image": "/images/slide1.png",
+    "title": "New Arrivals: Sci-Fi",
+    "description": "Explore new worlds and future technologies. The latest science fiction hits are now in stock and ready to ship."
   },
   {
-   "id": 3,
-    "image":"../src/assets/slide3.png",
-    "title":"Academic & Research",
-    "description":"Find the best resources for your studies. Comprehensive collections for students and researchers."
+    "id": 3,
+    "image": "/images/slide3.png",
+    "title": "Academic & Research",
+    "description": "Find the best resources for your studies. Comprehensive collections for students and researchers."
   }
 ]
