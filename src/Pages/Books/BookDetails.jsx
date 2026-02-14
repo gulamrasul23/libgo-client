@@ -257,14 +257,14 @@ const BookDetails = () => {
           ref={modalRef}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm sm:p-4 overflow-y-auto"
         >
-          <div className="bg-base-100 w-[300px] sm:w-full sm:max-w-xl rounded-2xl shadow-2xl relative  overflow-hidden max-h-[90vh] md:max-h-auto ">
+          <div className="bg-base-100 w-[350px] sm:w-full sm:max-w-xl rounded-2xl shadow-2xl relative  overflow-hidden max-h-[90vh] md:max-h-auto ">
             <button
               onClick={handleModalClose}
               className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 z-20 bg-base-100/50 hover:bg-red-500 hover:text-white"
             >
               ✕
             </button>
-            <div className="w-full p-8 overflow-y-auto max-h-[85vh]">
+            <div className="w-full p-4 md:p-8 overflow-y-auto max-h-[85vh]">
               <h2 className="text-2xl font-bold mb-1">Place Order form</h2>
               <p className="text-sm text-gray-500 mb-6">
                 Please enter your details for order.
