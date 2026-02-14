@@ -159,8 +159,8 @@ const AddBook = () => {
         <div className="min-h-[calc(100vh-64px)] bg-base-300/50 flex items-center p-2 justify-center ">
             <title>LibGo_Update_Book</title>
             <div className="w-full max-w-4xl bg-base-100 rounded-xl shadow-lg overflow-hidden border border-gray-100">
-                <div className="bg-secondary px-4 py-3 mb-4 flex items-center rounded-xl  justify-between ">
-                    <div>
+                <div className="bg-secondary px-4 py-3 mb-4 gap-4 sm:gap-1 flex flex-col sm:flex-row items-center rounded-xl  justify-between ">
+                    <div className="text-center sm:text-left">
                         <h2 className="text-2xl font-bold text-white">
                             Update Book Status
                         </h2>
