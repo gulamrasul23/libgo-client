@@ -206,7 +206,7 @@ const DashboardLayout = () => {
               </NavLink>
             </li>
 
-            {role === 'customer' && <>
+            {<>
               <li>
                 <NavLink
                   to="/dashboard/my-order"

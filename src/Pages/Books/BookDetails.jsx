@@ -118,7 +118,7 @@ const BookDetails = () => {
               reset();
               Swal.fire({
                 title: "Success..!",
-                text: "Already added to the wishlist!",
+                text: "Success your order",
                 icon: "success",
               });
               navigate("/dashboard/my-order");
