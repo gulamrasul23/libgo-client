@@ -6,15 +6,21 @@ import Register from "../Pages/Auth/Register";
 import ResetPassword from "../Pages/Auth/ResetPassword";
 import Books from "../Pages/Books/Books";
 import DashboardLayout from "../Layouts/DashboardLayout";
-
 import PrivateRoute from "./PrivateRoute";
 import BookDetails from "../Pages/Books/BookDetails";
 import MyOrder from "../Pages/Dashboard/MyOrder";
-
 import MyProfile from "../Pages/Dashboard/MyProfile";
 import MyInvoice from "../Pages/Dashboard/MyInvoice";
 import AddBooks from "../Pages/Dashboard/Librarian/AddBooks";
 import MyBook from "../Pages/Dashboard/Librarian/MyBook";
+import UpdateBook from "../Pages/Dashboard/Librarian/UpdateBook";
+import Orders from "../Pages/Dashboard/Librarian/Orders";
+import AllUsers from "../Pages/Dashboard/Admin/AllUsers";
+import ManageBooks from "../Pages/Dashboard/Admin/ManageBooks";
+import AdminRoute from "./AdminRoute";
+import AdminProfile from "../Pages/Dashboard/Admin/AdminProfile";
+import MyWishList from "../Pages/Dashboard/MywishList";
+import NotFound from "../Components/NotFound";
 
 export const router = createBrowserRouter([
   {
@@ -42,7 +48,7 @@ export const router = createBrowserRouter([
         Component: Books,
       },
       {
-        path: "/book-details/:id",
+        path: "book-details/:id",
         element: (
           <PrivateRoute>
             <BookDetails></BookDetails>
@@ -55,53 +61,106 @@ export const router = createBrowserRouter([
           </div>
         ),
       },
+
     ],
   },
 
   {
-  path: "/dashboard",
-  element: <DashboardLayout />,
-  children: [
-    {
-      index: true,
-      element: (
-        <PrivateRoute>
-          <MyProfile />
-        </PrivateRoute>
-      ),
-    },
-    {
-      path: "my-order",
-      element: (
-        <PrivateRoute>
-          <MyOrder />
-        </PrivateRoute>
-      ),
-    },
-    {
-      path: "my-invoice",
-      element: (
-        <PrivateRoute>
-          <MyInvoice />
-        </PrivateRoute>
-      ),
-    },
-    {
-      path: "add-book",
-      element: (
-        <PrivateRoute>
-          <AddBooks></AddBooks>
-        </PrivateRoute>
-      ),
-    },
-    {
-      path: "my-book",
-      element: (
-        <PrivateRoute>
-          <MyBook></MyBook>
-        </PrivateRoute>
-      ),
-    },
-  ],
-}
+    path: "/dashboard",
+    element: <DashboardLayout />,
+    children: [
+      {
+        index: true,
+        element: (
+          <PrivateRoute>
+            <MyProfile />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "my-order",
+        element: (
+          <PrivateRoute>
+            <MyOrder />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "my-invoice",
+        element: (
+          <PrivateRoute>
+            <MyInvoice />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "my-wishlist",
+        element: (
+          <PrivateRoute>
+            <MyWishList></MyWishList>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "add-book",
+        element: (
+          <PrivateRoute>
+            <AddBooks></AddBooks>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "my-book",
+        element: (
+          <PrivateRoute>
+            <MyBook></MyBook>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "orders",
+        element: (
+          <PrivateRoute>
+            <Orders></Orders>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "update-book/:id",
+        element: (
+          <PrivateRoute>
+            <UpdateBook></UpdateBook>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "admin-profile",
+        element: (
+          <PrivateRoute>
+            <AdminRoute><AdminProfile></AdminProfile></AdminRoute>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "users",
+        element: (
+          <PrivateRoute>
+            <AdminRoute><AllUsers></AllUsers></AdminRoute>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "manage-books",
+        element: (
+          <PrivateRoute>
+            <AdminRoute><ManageBooks></ManageBooks></AdminRoute>
+          </PrivateRoute>
+        ),
+      },
+    ],
+  },
+  {
+    path: "*",
+    element: <NotFound />
+  }
 ]);

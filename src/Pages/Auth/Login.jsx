@@ -41,19 +41,35 @@ const Login = () => {
           .post("/users", profileInfo)
           .then((res) => {
             if (res.data.insertedId) {
-              alert("Login Successfully");
-             
+              Swal.fire({
+                title: "Success..!",
+                text: "Login successfully!",
+                icon: "success",
+              });
             }
           })
           .catch((error) => {
-            console.log(error);
-            alert(error);
+            Swal.fire({
+              title: "Something Went Wrong...!",
+              text: `${error.message}`,
+              icon: "error",
+              confirmButtonText: "Try Again",
+            });
           });
-           navigate(location?.state || "/");
-           alert("Login Successfully");
+        navigate(location?.state || "/");
+        Swal.fire({
+          title: "Success..!",
+          text: "Login successfully!",
+          icon: "success",
+        });
       })
       .catch((error) => {
-        alert(error);
+        Swal.fire({
+          title: "Something Went Wrong...!",
+          text: `${error.message}`,
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
       });
   };
 
@@ -64,9 +80,7 @@ const Login = () => {
           title: "Success..!",
           text: "Sign In successfully!",
           icon: "success",
-          confirmButtonText: "Okay",
         });
-
         navigate(location.state || "/");
         reset();
       })
@@ -86,18 +100,18 @@ const Login = () => {
     e.preventDefault();
     setEye(!eye);
   };
-  
 
   return (
     <div className="pt-19 bg-base-100 flex items-center justify-center p-4">
+      <title>LibGo_Login</title>
       <div className="card lg:card-side bg-base-100 shadow-2xl max-w-md w-full overflow-hidden border border-base-200">
         <div className="card-body lg:w-1/2 justify-center px-8 lg:px-12 py-10">
-          <h2 className="text-3xl font-bold text-center mb-2 text-primary">
-            <h1 className="font-bold">
+          <h1 className="text-3xl font-bold text-center mb-2 text-primary">
+            <p className="font-bold">
               <span className="text-[#0D9470] ">Lib</span>
               <span className="text-[#f78d20]">Go</span>
-            </h1>
-          </h2>
+            </p>
+          </h1>
           <p className="text-center text-gray-500 mb-8">
             Welcome back! Please login to your account.
           </p>
@@ -161,8 +175,6 @@ const Login = () => {
               <button className="btn btn-primary mt-4">Login</button>
             </fieldset>
           </form>
-
-          {/* Social Login (Optional) */}
           <div className="divider text-gray-400 text-sm">OR LOGIN WITH</div>
 
           <div className="flex justify-center gap-4">
@@ -200,7 +212,6 @@ const Login = () => {
               Login with Google
             </button>
           </div>
-
           <p className="text-center mt-6 text-sm">
             Don't have an account?{" "}
             <Link state={location.state} to="/register" className="link link-primary font-bold">

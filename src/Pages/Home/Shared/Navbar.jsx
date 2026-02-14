@@ -30,7 +30,6 @@ const Navbar = () => {
           title: "Logout..!",
           text: "You logged out successfully.",
           icon: "info",
-          confirmButtonText: "Okay",
         });
       })
       .catch((error) => {
@@ -78,26 +77,7 @@ const Navbar = () => {
                 Dashboard
               </NavLink>
             </li>
-            {/* <li onClick={() => setDropdownOpen(false)}>
-              <NavLink
-                to="/"
-                className={({ isActive }) =>
-                  `hover:bg-base-content/10 ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
-                }
-              >
-                My Rating
-              </NavLink>
-            </li>
-            <li onClick={() => setDropdownOpen(false)}>
-              <NavLink
-                to="/"
-                className={({ isActive }) =>
-                  `hover:bg-base-content/10 ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
-                }
-              >
-                Add Property
-              </NavLink>
-            </li> */}
+
           </>
         </>
       ) : (
@@ -213,7 +193,6 @@ const Navbar = () => {
                   )}
                 </Link>
               </div>
-
               <div
                 tabIndex={0}
                 className="dropdown-content card-sm  bg-base-100 rounded-box z-1 w-56 shadow-2xl"
@@ -245,7 +224,6 @@ const Navbar = () => {
                 checked={theme === "dark"}
                 className=" theme-controller"
               />
-
               <svg
                 aria-label="sun"
                 xmlns="http://www.w3.org/2000/svg"
@@ -269,7 +247,6 @@ const Navbar = () => {
                   <path d="m19.07 4.93-1.41 1.41"></path>
                 </g>
               </svg>
-
               <svg
                 aria-label="moon"
                 xmlns="http://www.w3.org/2000/svg"

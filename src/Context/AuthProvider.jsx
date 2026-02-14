@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AuthContext } from './AuthContext';
 import { auth } from '../firebase/firebase.init';
 import { createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from 'firebase/auth';
@@ -6,27 +6,27 @@ import { GoogleAuthProvider } from 'firebase/auth';
 
 
 
-const AuthProvider = ({children}) => {
+const AuthProvider = ({ children }) => {
     const provider = new GoogleAuthProvider();
-    const [user,setUser] = useState(null);
-    const [loading,setLoading] = useState(true);
-    const registerUser = (email,password) => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const registerUser = (email, password) => {
         setLoading(true);
-        return createUserWithEmailAndPassword(auth,email,password)
+        return createUserWithEmailAndPassword(auth, email, password)
     }
 
     const loginGoogle = () => {
         setLoading(true);
-        return signInWithPopup(auth,provider);
+        return signInWithPopup(auth, provider);
     }
 
-    const loginUser = (email,password) => {
+    const loginUser = (email, password) => {
         setLoading(true);
-        return signInWithEmailAndPassword(auth, email,password);
+        return signInWithEmailAndPassword(auth, email, password);
     }
 
     const updateUser = (profile) => {
-        return updateProfile(auth.currentUser,profile);
+        return updateProfile(auth.currentUser, profile);
     }
 
     const logOutUser = () => {
@@ -35,19 +35,19 @@ const AuthProvider = ({children}) => {
     }
 
     const resetPassword = (email) => {
-    setLoading(true);
-    return sendPasswordResetEmail(auth, email);
-  };
+        setLoading(true);
+        return sendPasswordResetEmail(auth, email);
+    };
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth,(currentUser) => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
             setLoading(false);
         })
         return () => {
             unsubscribe();
         };
-    },[])
+    }, [])
 
     const authInfo = {
         registerUser,

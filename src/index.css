@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+
 body {
   font-family: "Urbanist", sans-serif;
   font-optical-sizing: auto;
@@ -7,22 +8,22 @@ body {
 
 @import "tailwindcss";
 @plugin "daisyui";
+
 @plugin "daisyui/theme" {
   name: "light";
   default: true;
   --color-primary: #0F766E;
-  --color-secondary:#f78d20;
-  --color-base-100: #FFFBEB;       /* Main background */
-  --color-base-200: #FFFFFF;       /* Card bg */
-  --color-base-300: #E5E7EB;       /* Card border */
+  --color-secondary: #f78d20;
+  --color-base-100: #FFFBEB;
+  --color-base-200: #FFFFFF;
+  --color-base-300: #E5E7EB;
 }
 
 @plugin "daisyui/theme" {
   name: "dark";
   --color-primary: #0D9470;
   --color-secondary: #f78d20;
-  --color-base-100: #111827;       /* Main bg */
-  --color-base-200: #1F2937;       /* Card bg */
-  --color-base-300: #374151;       /* Border */
+  --color-base-100: #111827;
+  --color-base-200: #1F2937;
+  --color-base-300: #374151;
 }
-

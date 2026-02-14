@@ -1,39 +1,31 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Search, Filter, BookOpen, Star, ArrowRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 
-// Mock Data (Replace with your API call)
-
-
-
 const Books = () => {
-    const axiosSecure = useAxiosSecure();
-     const [searchTerm, setSearchTerm] = useState("");
-    const { data: books = []} = useQuery({
-        queryKey:['books',searchTerm,'Published'],
-        queryFn: async () => {
-            const res = await axiosSecure.get(`/books?searchText=${searchTerm}`);
-            return res.data;
-        }
-    })
+  const axiosSecure = useAxiosSecure();
+  const [searchTerm, setSearchTerm] = useState("");
+  const { data: books = [] } = useQuery({
+    queryKey: ['books', searchTerm, 'Published'],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/books?searchText=${searchTerm}`);
+      return res.data;
+    }
+  })
   const navigate = useNavigate();
- 
 
   const handleDetails = (id) => {
     navigate(`/book-details/${id}`)
   }
 
-
-
   return (
     <div className="min-h-screen bg-base-200 font-sans pt-16">
-      {/* Header Section */}
+      <title>LibGo_Books</title>
       <div className="bg-base-200 border-b border-gray-200 sticky top-16 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            {/* Title & Stats */}
             <div>
               <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
                 <BookOpen className="text-blue-600" />
@@ -43,8 +35,6 @@ const Books = () => {
                 Showing {books.length} books curated by librarians
               </p>
             </div>
-
-            {/* Search & Filter Actions */}
             <div className="flex items-center gap-3">
               <div className="relative group">
                 <Search
@@ -59,7 +49,6 @@ const Books = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-
               <button className="p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-600 transition-colors">
                 <Filter size={20} />
               </button>
@@ -67,8 +56,6 @@ const Books = () => {
           </div>
         </div>
       </div>
-
-      {/* Main Grid Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {books.map((book) => (
@@ -76,19 +63,14 @@ const Books = () => {
               onClick={() => handleDetails(book._id)}
               className="group relative bg-base-300 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 border border-base-100"
             >
-              {/* Image Container with Overlay */}
-              <div className="relative h-64 overflow-hidden">
+              <div className="relative h-85 sm:h-70 md:h-64 overflow-hidden">
                 <img
                   src={book.bookImage}
                   alt={book.bookTitle}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-
-                {/* Badge */}
               </div>
-
-              {/* Content */}
               <div className="p-6">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-md">
@@ -101,12 +83,10 @@ const Books = () => {
                     </span>
                   </div>
                 </div>
-
                 <h3 className="text-xl font-bold text-primary mb-1 group-hover:text-secondary transition-colors">
                   {book.bookTitle}
                 </h3>
                 <p className="text-gray-500 text-sm mb-4">by {book.author}</p>
-
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                   <span className="text-xs text-gray-400 font-medium">
                     View Details

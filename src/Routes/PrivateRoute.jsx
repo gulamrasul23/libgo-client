@@ -2,21 +2,20 @@
 import useAuth from '../hooks/useAuth';
 import { Navigate, useLocation } from 'react-router';
 
-const PrivateRoute = ({children}) => {
-    const {user,loading} = useAuth();
-    const location =useLocation();
+const PrivateRoute = ({ children }) => {
+    const { user, loading } = useAuth();
+    const location = useLocation();
 
-    if(loading){
+    if (loading) {
         return <div className=" min-h-[calc(100vh-285px)] flex items-center justify-center">
             <span className="loading loading-bars loading-xl"></span>
-          </div>
+        </div>
     }
-    if(user){
+    if (user) {
         return children;
-    }else{
+    } else {
         return <Navigate state={location?.pathname} to="/login"></Navigate>
     }
-
 };
 
-export default PrivateRoute;
+export default PrivateRoute; 

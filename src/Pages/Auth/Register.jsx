@@ -6,6 +6,7 @@ import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router";
 import imageCompression from "browser-image-compression";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
 const Register = () => {
   const {
@@ -30,7 +31,12 @@ const Register = () => {
     try {
       compressedFile = await imageCompression(profileImg, options);
     } catch (error) {
-      alert(error);
+      Swal.fire({
+        title: "Something Went Wrong...!",
+        text: `${error.message}`,
+        icon: "error",
+        confirmButtonText: "Try Again",
+      });
       return;
     }
 
@@ -40,7 +46,7 @@ const Register = () => {
         formData.append("image", compressedFile);
         const image_api_url = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_key}`;
         axios.post(image_api_url, formData).then((res) => {
-        
+
           const userProfile = {
             displayName: data.name,
             photoURL: res.data.data.url,
@@ -60,21 +66,40 @@ const Register = () => {
                 .then((res) => {
                   if (res.data.insertedId) {
                     reset();
-                    alert("Register Successfully");
+                    Swal.fire({
+                      title: "Success..!",
+                      text: "Registered successfully!",
+                      icon: "success",
+                    });
                     navigate(location?.state || "/");
                   }
                 })
                 .catch((error) => {
-                  alert(error);
+                  Swal.fire({
+                    title: "Something Went Wrong...!",
+                    text: `${error.message}`,
+                    icon: "error",
+                    confirmButtonText: "Try Again",
+                  });
                 });
             })
             .catch((error) => {
-              alert(error);
+              Swal.fire({
+                title: "Something Went Wrong...!",
+                text: `${error.message}`,
+                icon: "error",
+                confirmButtonText: "Try Again",
+              });
             });
         });
       })
       .catch((error) => {
-        alert(error);
+        Swal.fire({
+          title: "Something Went Wrong...!",
+          text: `${error.message}`,
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
       });
   };
 
@@ -96,19 +121,36 @@ const Register = () => {
           .post("/users", profileInfo)
           .then((res) => {
             if (res.data.insertedId) {
-              alert("Register Successfully");
+              Swal.fire({
+                title: "Success..!",
+                text: "Registered successfully!",
+                icon: "success",
+              });
               navigate(location?.state || "/");
             }
           })
           .catch((error) => {
-            console.log(error);
-            alert(error);
+            Swal.fire({
+              title: "Something Went Wrong...!",
+              text: `${error.message}`,
+              icon: "error",
+              confirmButtonText: "Try Again",
+            });
           });
-           navigate(location?.state || "/");
-           alert("Login Successfully");
+        Swal.fire({
+          title: "Success..!",
+          text: "Login successfully!",
+          icon: "success",
+        });
+        navigate(location?.state || "/");
       })
       .catch((error) => {
-        alert(error);
+        Swal.fire({
+          title: "Something Went Wrong...!",
+          text: `${error.message}`,
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
       });
   };
 
@@ -120,6 +162,7 @@ const Register = () => {
   };
   return (
     <div className="pt-19 bg-base-100 flex items-center justify-center p-4">
+      <title>LibGo_Register</title>
       <div className="card lg:card-side bg-base-100 shadow-2xl max-w-md w-full overflow-hidden border border-base-200">
         <div className="card-body lg:w-1/2 justify-center px-8 lg:px-12 py-10">
           <h2 className="text-3xl font-bold text-center mb-2 text-primary">
@@ -168,6 +211,7 @@ const Register = () => {
               </label>
               <input
                 type="file"
+                accept="image/*"
                 {...register("photo", { required: true })}
                 className="file-input file-input-primary"
               />
@@ -210,10 +254,7 @@ const Register = () => {
               <button className="btn btn-primary mt-4">Sign Up</button>
             </fieldset>
           </form>
-
-          {/* Social Login (Optional) */}
           <div className="divider text-gray-400 text-sm">OR LOGIN WITH</div>
-
           <div className="flex justify-center gap-4">
             <button
               onClick={handleGoogleIn}
@@ -249,7 +290,6 @@ const Register = () => {
               Login with Google
             </button>
           </div>
-
           <p className="text-center mt-6 text-sm">
             Already have an account?{" "}
             <Link

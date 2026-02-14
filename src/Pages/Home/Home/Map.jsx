@@ -1,16 +1,19 @@
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import { useState } from "react";
 
 const Map = ({ centers }) => {
   const position = [23.685, 90.356];
 
+  const [zoom] = useState(
+    window.innerWidth < 640 ? 7 : 8
+  );
 
   return (
-   
-            <div className="h-[420px] w-full lg:w-2/3 relative z-10 rounded-3xl overflow-hidden shadow-inner border border-base-300">
+    <div className="h-[420px] w-full lg:w-2/3 relative z-10 rounded-3xl overflow-hidden shadow-inner border border-base-300">
       <MapContainer
         center={position}
-        zoom={8}
+        zoom={zoom}
         scrollWheelZoom={true}
         className="h-[420px] w-full rounded-3xl overflow-hidden shadow-inner border border-base-300"
       >
@@ -31,7 +34,7 @@ const Map = ({ centers }) => {
           </Marker>
         ))}
       </MapContainer>
-       </div>
+    </div>
   );
 };
 

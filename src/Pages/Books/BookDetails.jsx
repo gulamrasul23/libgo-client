@@ -1,23 +1,12 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Swal from "sweetalert2";
-import {
-  FaStar,
-  FaStarHalfAlt,
-  FaRegStar,
-  FaShoppingCart,
-  FaUserCircle,
-  FaMapMarkerAlt,
-  FaPhoneAlt,
-  FaEnvelope,
-  FaBookOpen,
-} from "react-icons/fa";
-import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { useLoaderData, useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import { useForm } from "react-hook-form";
+import NotFound from "../../Components/NotFound";
 
 const BookDetails = () => {
   const axiosSecure = useAxiosSecure();
@@ -26,8 +15,8 @@ const BookDetails = () => {
   const { id } = useParams();
   const modalRef = useRef(null);
   const navigate = useNavigate();
-  const { data: book = [] } = useQuery({
-    queryKey: ["book-details"],
+  const { data: book = [], isError, isLoading } = useQuery({
+    queryKey: ["book-details", id],
     queryFn: async () => {
       const res = await axiosSecure.get(`/books/book-details/${id}`);
       return res.data;
@@ -51,7 +40,6 @@ const BookDetails = () => {
   };
   const duplicateRegion = addressPromise.map((r) => r.region);
   const regions = [...new Set(duplicateRegion)];
-  // const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const handleModal = () => setIsOpen(true);
   const handleModalClose = () => {
@@ -59,34 +47,58 @@ const BookDetails = () => {
     reset();
   };
 
-  // Rating Star রেন্ডার করার ফাংশন
-  // const renderStars = (rating) => {
-  //   const stars = [];
-  //   for (let i = 1; i <= 5; i++) {
-  //     if (i <= rating) {
-  //       stars.push(<FaStar key={i} className="text-yellow-400" />);
-  //     } else if (i === Math.ceil(rating) && !Number.isInteger(rating)) {
-  //       stars.push(<FaStarHalfAlt key={i} className="text-yellow-400" />);
-  //     } else {
-  //       stars.push(<FaRegStar key={i} className="text-gray-300" />);
-  //     }
-  //   }
-  //   return stars;
-  // };
+  const handleWishlist = () => {
+    const wishlistData = {
+      wishlistId: book._id,
+      bookTitle: book.bookTitle,
+      bookImage: book.bookImage,
+      category: book.category,
+      price: book.price,
+      customerEmail: user.email,
+      createdAt: new Date(),
+    }
+    axiosSecure.post(`/wishlists`, wishlistData)
+      .then((res) => {
+        if (res.data.insertedId) {
+          Swal.fire({
+            title: "Success..!",
+            text: "Add wishlist successfully!",
+            icon: "success",
+          });
+        }
+      })
+      .catch((error) => {
+        if (error.status === 400) {
+          Swal.fire({
+            title: "Alert..!",
+            text: "Already added to the wishlist!",
+            icon: "info",
+          });
+        } else {
+          Swal.fire({
+            title: "Something Went Wrong...!",
+            text: `${error.message}`,
+            icon: "error",
+            confirmButtonText: "Try Again",
+          });
+        }
+
+      });
+  }
 
   const handleBuy = (data) => {
     const address = [data.region, data.district, data.address].join(", ");
-
     const orderData = {
       bookId: book._id,
       bookTitle: book.bookTitle,
       price: book.price,
+      librarianEmail: book.librarianEmail,
       customerName: user.displayName,
       customerEmail: user.email,
       phone: data.number,
       address: address,
-      status: "pending",
-      payment: "unpaid",
+      status: "Pending",
+      payment: "Unpaid",
     };
 
     Swal.fire({
@@ -104,24 +116,45 @@ const BookDetails = () => {
           .then((res) => {
             if (res.data.insertedId) {
               reset();
+              Swal.fire({
+                title: "Success..!",
+                text: "Already added to the wishlist!",
+                icon: "success",
+              });
               navigate("/dashboard/my-order");
             }
           })
           .catch((error) => {
-            alert(error);
+            Swal.fire({
+              title: "Something Went Wrong...!",
+              text: `${error.message}`,
+              icon: "error",
+              confirmButtonText: "Try Again",
+            });
           });
       }
     });
   };
 
+  if (isLoading) {
+    return <div className=" min-h-[calc(100vh-285px)] flex items-center justify-center">
+      <span className="loading loading-bars loading-xl"></span>
+    </div>
+  }
+
+  if (isError || !book) {
+    return <NotFound />;
+  }
+
   return (
     <div className="bg-base-100 py-19 max-w-7xl mx-auto px-6 md:px-12">
-      <div className="pb-6 flex ">
-        <figure className="w-2/3 h-[200px] md:h-[500px] lg:h-[600px] rounded-l-xl overflow-hidden shadow-md relative">
+      <title>LibGo_Book_Details</title>
+      <div className="pb-6 flex md:flex-row flex-col ">
+        <figure className="md:w-2/3 h-[500px] sm:h-[700px] md:h-[500px] lg:h-[600px] rounded-l-xl overflow-hidden shadow-md relative">
           <img
             src={book.bookImage}
             alt={book.bookTitle}
-            className="w-full h-full  hover:scale-105 transition-transform duration-700 ease-in-out"
+            className="w-full h-full object-cover  hover:scale-105 transition-transform duration-700 ease-in-out"
           />
 
           <div className="absolute inset-0 to-transparent pointer-events-none"></div>
@@ -141,16 +174,14 @@ const BookDetails = () => {
                   {book.category}
                 </div>
               </div>
-
               <br />
             </div>
             <p className="text-sm text-gray-400">
               Posted: {new Date(book.createdAt).toLocaleDateString()}
             </p>
           </div>
-
           <div className=" flex flex-col h-[calc(100%-128px)] p-6">
-            <div className="flex justify-between items-end ">
+            <div className="flex flex-col-reverse lg:flex-row  gap-2 lg:justify-between lg:items-end ">
               <div>
                 <p className="text-base-content/60 font-medium">Book Price</p>
                 <h2 className="text-3xl font-extrabold text-primary mb2 sm:mb-4">
@@ -163,7 +194,7 @@ const BookDetails = () => {
                   >
                     Buy Now
                   </button>
-                  <button className="btn btn-outline w-full text-base-content hover:bg-secondary">
+                  <button onClick={handleWishlist} className="btn btn-outline w-full text-base-content hover:bg-secondary">
                     Add to Wishlist
                   </button>
                 </div>
@@ -192,17 +223,16 @@ const BookDetails = () => {
                   <div>
                     <h3 className="font-bold text-lg">{book.librarianName}</h3>
                     <div className="badge badge-accent badge-outline text-xs">
-                      Verified Owner
+                      Verified Librarian
                     </div>
                   </div>
                 </div>
-
                 <div className="bg-base-100  rounded-lg text-sm text-base-content/60 break-all border border-base-200">
                   ✉️ {book.librarianEmail}
                 </div>
               </div>
             </div>
-            <div className="divider my-4 "></div>
+            <div className="divider my-2 lg:my-4 "></div>
             <div className=" lg:block hidden">
               <h3 className="text-2xl font-bold mb-4 border-b pb-2 inline-block">
                 About this Book
@@ -222,9 +252,6 @@ const BookDetails = () => {
           {book.description}
         </p>
       </div>
-
-      {/*Modal--------------*/}
-
       {isOpen && (
         <div
           ref={modalRef}
@@ -242,7 +269,6 @@ const BookDetails = () => {
               <p className="text-sm text-gray-500 mb-6">
                 Please enter your details for order.
               </p>
-
               <form
                 onSubmit={handleSubmit(handleBuy)}
                 className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6 "
@@ -277,7 +303,6 @@ const BookDetails = () => {
                     readOnly
                   />
                 </div>
-
                 <div className="form-control md:col-span-2">
                   <label className="label">
                     <span className="label-text text-base-content/60 font-bold">
@@ -304,7 +329,6 @@ const BookDetails = () => {
                     </p>
                   )}
                 </div>
-
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text text-base-content/60 font-bold">

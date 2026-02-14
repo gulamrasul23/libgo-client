@@ -5,6 +5,7 @@ import imageCompression from "browser-image-compression";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { useState } from "react";
+import Swal from "sweetalert2";
 
 const AddBook = () => {
   const axiosSecure = useAxiosSecure();
@@ -18,23 +19,26 @@ const AddBook = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
 
-  // 3. Handle Form Submit
   const handleAddBook = async (data) => {
     setLoading(true);
     const bookImg = data.photo[0];
     const options = {
-      maxSizeMB: 1,
-      maxWidthOrHeight: 800,
+      maxSizeMB: 1.5,
+      maxWidthOrHeight: 1000,
       useWebWorker: true,
     };
     let compressedFile;
     try {
       compressedFile = await imageCompression(bookImg, options);
     } catch (error) {
-      alert(error);
+      Swal.fire({
+        title: "Something Went Wrong...!",
+        text: `${error.message}`,
+        icon: "error",
+        confirmButtonText: "Try Again",
+      });
       return;
     }
-
     const formData = new FormData();
     formData.append("image", compressedFile);
     const image_api_url = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_key}`;
@@ -54,16 +58,25 @@ const AddBook = () => {
       };
 
       axiosSecure
-        .post("/books", bookInfo)
+        .post("/books/add-book", bookInfo)
         .then((res) => {
           if (res.data.insertedId) {
             reset();
-            alert("Added a book successfully");
+            Swal.fire({
+              title: "Success..!",
+              text: "Added a book successfully",
+              icon: "success",
+            });
             navigate("/books");
           }
         })
         .catch((error) => {
-          alert(error);
+          Swal.fire({
+            title: "Something Went Wrong...!",
+            text: `${error.message}`,
+            icon: "error",
+            confirmButtonText: "Try Again",
+          });
         });
       setLoading(false);
     });
@@ -71,8 +84,8 @@ const AddBook = () => {
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-base-300/50 flex items-center justify-center ">
+      <title>LibGo_Add_Book</title>
       <div className="w-full max-w-4xl bg-base-100 rounded-xl shadow-lg overflow-hidden border border-gray-100">
-        {/* Header - Primary Color Background */}
         <div className="bg-primary px-8 py-6">
           <h2 className="text-2xl font-bold text-white text-center">
             Add New Book
@@ -81,10 +94,7 @@ const AddBook = () => {
             Fill in the details to add a book to the inventory
           </p>
         </div>
-
-        {/* Form Container */}
         <form onSubmit={handleSubmit(handleAddBook)} className="p-8 space-y-6">
-          {/* Row 1: Title & Author */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="form-control">
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -115,8 +125,6 @@ const AddBook = () => {
               )}
             </div>
           </div>
-
-          {/* Row 2: Image URL & Category */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="form-control">
               <label className="block text-sm font-medium text-gray-600 mb-1">
@@ -125,7 +133,6 @@ const AddBook = () => {
               <input
                 type="file"
                 {...register("photo", { required: true })}
-                // {...register("photo", { required: true })}
                 className="file-input file-input-bordered file-input-primary w-full  file-input-md"
               />
               {errors.photo?.type === "required" && (
@@ -147,8 +154,6 @@ const AddBook = () => {
               )}
             </div>
           </div>
-
-          {/* Row 3: Price & Status (Your Requirement) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="form-control">
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -166,7 +171,6 @@ const AddBook = () => {
                 <p className="text-red-500">Please enter book category.</p>
               )}
             </div>
-
             <div className="form-control">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Status
@@ -191,8 +195,6 @@ const AddBook = () => {
               </p>
             </div>
           </div>
-
-          {/* Row 4: Description */}
           <div className="form-control">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Description
@@ -212,8 +214,6 @@ const AddBook = () => {
               </p>
             )}
           </div>
-
-          {/* Row 5: Librarian Info (Read Only) */}
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <h3 className="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wider">
               Librarian Details
@@ -243,8 +243,6 @@ const AddBook = () => {
               </div>
             </div>
           </div>
-
-          {/* Submit Button */}
           <div className="pt-4">
             <button
               type="submit"
