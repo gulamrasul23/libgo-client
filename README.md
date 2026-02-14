@@ -1,16 +1,52 @@
-# React + Vite
+# LibGo – Library-to-Home Delivery System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**LibGo** is a comprehensive library delivery management system designed to bridge the gap between libraries and readers. It allows users to borrow books from nearby libraries without physical visits, facilitates librarians in managing their inventory, and provides administrators with full system control.
 
-Currently, two official plugins are available:
+**Live Site URL:** [(https://lib-go-5abe2.web.app/)]
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Project Overview
 
-## React Compiler
+The primary goal of BookCourier is to simplify the book borrowing process for students, researchers, and avid readers. The platform ensures a seamless experience from browsing books to having them delivered to the user's doorstep, featuring a robust role-based access control system (User, Librarian, Admin).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Key Features
 
-## Expanding the ESLint configuration
+***  Role-Based Dashboard System:**
+    * **User:** Manage orders, track delivery status, wishlist books, and view payment history.
+    * **Librarian:** Add/Update books, manage inventory status (published/unpublished), and handle order workflows (Pending → Shipped → Delivered).
+    * **Admin:** Manage users (promote to Admin/Librarian) and oversee all books and system activities.
+*** Secure Authentication & Authorization:**
+    * Email/Password and Social Login via Firebase.
+    * JWT (JSON Web Token) implementation for securing private routes and API endpoints.
+*** Advanced Book Management:**
+    * Search functionality to find books by name.
+    * Sorting options to filter books by price.
+    * Book categories, details view, and "Related Books" suggestions.
+*** Smart Borrowing & Payment Flow:**
+    * Seamless "Borrow" process with a modal form.
+    * Real-time status tracking (Pending, Paid, Shipped, Delivered).
+    * Integrated payment gateway simulation.
+*** Interactive Coverage Map:**
+    * A dynamic map showcasing all cities where BookCourier service is available using Leaflet maps.
+*** Wishlist:**
+    * Users can add books to a wishlist for later.
+    
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Technologies Used
+
+* **Frontend:** React.js, Tailwind CSS, DaisyUI
+* **Backend:** Node.js, Express.js
+* **Database:** MongoDB
+* **Authentication:** Firebase Auth
+* **Security:** JWT (JSON Web Token)
+* **Tools:** Vite, Axios, React Router
+
+## Main npm Packages Used (Client Side)
+
+* `react-router`: For single-page application navigation.
+* `firebase`: For authentication and hosting.
+* `axios`: For making secure HTTP requests to the backend.
+* `react-hook-form`: For efficient form handling and validation.
+* `swiper`: For the interactive home page sliders/carousels.
+* `react-leaflet` : For displaying the delivery coverage map.
+* `sweetalert2`: For user-friendly notifications and alerts.
+
