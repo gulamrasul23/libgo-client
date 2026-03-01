@@ -2,14 +2,11 @@ import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useState } from "react";
 
-
 import L from "leaflet";
-
 
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
-
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -22,16 +19,14 @@ L.Icon.Default.mergeOptions({
 const Map = ({ centers }) => {
   const position = [23.685, 90.356];
 
-  const [zoom] = useState(
-    window.innerWidth < 640 ? 7 : 8
-  );
+  const [zoom] = useState(window.innerWidth < 640 ? 7 : 8);
 
   return (
     <div className="h-[420px] w-full lg:w-2/3 relative z-10 rounded-3xl overflow-hidden shadow-inner border border-base-300">
       <MapContainer
         center={position}
         zoom={zoom}
-        scrollWheelZoom={true}
+        scrollWheelZoom={false}
         className="h-[420px] w-full rounded-3xl overflow-hidden shadow-inner border border-base-300"
       >
         <TileLayer
@@ -47,7 +42,10 @@ const Map = ({ centers }) => {
             }}
             position={[center.latitude, center.longitude]}
           >
-            <Popup><strong>{center.district}</strong> <br /> Covered Areas:  {center.covered_area.join(", ")}</Popup>
+            <Popup>
+              <strong>{center.district}</strong> <br /> Covered Areas:{" "}
+              {center.covered_area.join(", ")}
+            </Popup>
           </Marker>
         ))}
       </MapContainer>

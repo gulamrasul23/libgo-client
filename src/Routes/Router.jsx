@@ -21,6 +21,10 @@ import AdminRoute from "./AdminRoute";
 import AdminProfile from "../Pages/Dashboard/Admin/AdminProfile";
 import MyWishList from "../Pages/Dashboard/MywishList";
 import NotFound from "../Components/NotFound";
+import About from "../Pages/About/About";
+import Blog from "../Pages/Blog/Blog";
+import AdminOverview from "../Pages/Dashboard/Admin/AdminOverview";
+import Contact from "../Pages/Contact/Contact";
 
 export const router = createBrowserRouter([
   {
@@ -48,12 +52,24 @@ export const router = createBrowserRouter([
         Component: Books,
       },
       {
-        path: "book-details/:id",
+        path: "blog",
         element: (
           <PrivateRoute>
-            <BookDetails></BookDetails>
+            <Blog></Blog>
           </PrivateRoute>
         ),
+      },
+      {
+        path: "about",
+        Component: About,
+      },
+      {
+        path: "contact",
+        Component: Contact,
+      },
+      {
+        path: "book-details/:id",
+        element: <BookDetails></BookDetails>,
         loader: () => fetch("/warehouses.json").then((res) => res.json()),
         hydrateFallbackElement: (
           <div className=" min-h-[calc(100vh-285px)] flex items-center justify-center">
@@ -61,7 +77,6 @@ export const router = createBrowserRouter([
           </div>
         ),
       },
-
     ],
   },
 
@@ -137,7 +152,19 @@ export const router = createBrowserRouter([
         path: "admin-profile",
         element: (
           <PrivateRoute>
-            <AdminRoute><AdminProfile></AdminProfile></AdminRoute>
+            <AdminRoute>
+              <AdminProfile></AdminProfile>
+            </AdminRoute>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "admin-overview",
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <AdminOverview></AdminOverview>
+            </AdminRoute>
           </PrivateRoute>
         ),
       },
@@ -145,7 +172,9 @@ export const router = createBrowserRouter([
         path: "users",
         element: (
           <PrivateRoute>
-            <AdminRoute><AllUsers></AllUsers></AdminRoute>
+            <AdminRoute>
+              <AllUsers></AllUsers>
+            </AdminRoute>
           </PrivateRoute>
         ),
       },
@@ -153,7 +182,9 @@ export const router = createBrowserRouter([
         path: "manage-books",
         element: (
           <PrivateRoute>
-            <AdminRoute><ManageBooks></ManageBooks></AdminRoute>
+            <AdminRoute>
+              <ManageBooks></ManageBooks>
+            </AdminRoute>
           </PrivateRoute>
         ),
       },
@@ -161,6 +192,6 @@ export const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: <NotFound />
-  }
+    element: <NotFound />,
+  },
 ]);

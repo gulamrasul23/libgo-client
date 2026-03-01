@@ -19,8 +19,11 @@ const Register = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const axiosSecure = useAxiosSecure();
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async (data) => {
+    if (loading) return;
+    setLoading(true);
     const profileImg = data.photo[0];
     const options = {
       maxSizeMB: 0.3,
@@ -31,6 +34,7 @@ const Register = () => {
     try {
       compressedFile = await imageCompression(profileImg, options);
     } catch (error) {
+      setLoading(false);
       Swal.fire({
         title: "Something Went Wrong...!",
         text: `${error.message}`,
@@ -46,7 +50,6 @@ const Register = () => {
         formData.append("image", compressedFile);
         const image_api_url = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_key}`;
         axios.post(image_api_url, formData).then((res) => {
-
           const userProfile = {
             displayName: data.name,
             photoURL: res.data.data.url,
@@ -70,6 +73,8 @@ const Register = () => {
                       title: "Success..!",
                       text: "Registered successfully!",
                       icon: "success",
+                      timer: 1500,
+                      showConfirmButton: false,
                     });
                     navigate(location?.state || "/");
                   }
@@ -81,6 +86,8 @@ const Register = () => {
                     icon: "error",
                     confirmButtonText: "Try Again",
                   });
+                  setLoading(false);
+                  return;
                 });
             })
             .catch((error) => {
@@ -90,6 +97,8 @@ const Register = () => {
                 icon: "error",
                 confirmButtonText: "Try Again",
               });
+              setLoading(false);
+              return;
             });
         });
       })
@@ -100,62 +109,53 @@ const Register = () => {
           icon: "error",
           confirmButtonText: "Try Again",
         });
+        setLoading(false);
+        return;
       });
   };
 
-  const handleGoogleIn = () => {
-    loginGoogle()
-      .then((result) => {
-        const user = result.user;
-
-        const profileInfo = {
-          displayName: user.displayName,
-          email: user.email,
-          photoURL: user.photoURL,
-          role: "customer",
-          userType: "General User",
-          createdAt: new Date(),
-        };
-
-        axiosSecure
-          .post("/users", profileInfo)
-          .then((res) => {
-            if (res.data.insertedId) {
-              Swal.fire({
-                title: "Success..!",
-                text: "Registered successfully!",
-                icon: "success",
-              });
-              navigate(location?.state || "/");
-            }
-          })
-          .catch((error) => {
-            Swal.fire({
-              title: "Something Went Wrong...!",
-              text: `${error.message}`,
-              icon: "error",
-              confirmButtonText: "Try Again",
-            });
+   const handleGoogleIn = () => {
+      if (loading) return;
+      setLoading(true);
+      loginGoogle()
+        .then((result) => {
+          const user = result.user;
+  
+          const profileInfo = {
+            displayName: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+            role: "customer",
+            userType: "General User",
+            createdAt: new Date(),
+          };
+  
+          return axiosSecure.post("/users", profileInfo);
+        })
+        .then(() => {
+          Swal.fire({
+            title: "Success..!",
+            text: "Login successfully!",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false,
           });
-        Swal.fire({
-          title: "Success..!",
-          text: "Login successfully!",
-          icon: "success",
+          navigate(location?.state || "/");
+        })
+        .catch((error) => {
+          Swal.fire({
+            title: "Something Went Wrong...!",
+            text: `${error.message}`,
+            icon: "error",
+            confirmButtonText: "Try Again",
+          });
+        })
+        .finally(() => {
+          setLoading(false);
         });
-        navigate(location?.state || "/");
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: "Something Went Wrong...!",
-          text: `${error.message}`,
-          icon: "error",
-          confirmButtonText: "Try Again",
-        });
-      });
-  };
+    };
 
   const [eye, setEye] = useState(false);
-
   const handleToggleShow = (e) => {
     e.preventDefault();
     setEye(!eye);
@@ -186,7 +186,7 @@ const Register = () => {
               <input
                 type="text"
                 {...register("name", { required: true })}
-                className="input border-primary/50"
+                className="input border-primary/50 outline-primary"
                 placeholder="Your name"
               />
               {errors.name?.type === "required" && (
@@ -199,7 +199,7 @@ const Register = () => {
               <input
                 type="email"
                 {...register("email", { required: true })}
-                className="input border-primary/50"
+                className="input border-primary/50 outline-primary "
                 placeholder="Email"
               />
               {errors.email?.type === "required" && (
@@ -213,7 +213,7 @@ const Register = () => {
                 type="file"
                 accept="image/*"
                 {...register("photo", { required: true })}
-                className="file-input file-input-primary"
+                className="file-input file-input-primary outline-primary "
               />
 
               <label className="label">
@@ -226,7 +226,7 @@ const Register = () => {
                     required: true,
                     pattern: /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
                   })}
-                  className="input font-sans border-primary/50"
+                  className="input font-sans border-primary/50 outline-primary"
                   placeholder="Password"
                 />
                 {errors.password?.type === "required" && (
@@ -240,6 +240,7 @@ const Register = () => {
                 )}
 
                 <button
+                  type="button"
                   onClick={handleToggleShow}
                   className=" cursor-pointer absolute right-4 top-3 border-none bg-transparent"
                 >
@@ -251,14 +252,21 @@ const Register = () => {
                 </button>
               </div>
               <div></div>
-              <button className="btn btn-primary mt-4">Sign Up</button>
+              <button type="submit" disabled={loading} className="btn btn-primary mt-4">
+                {loading ? (
+                <span className="loading loading-spinner"></span>
+              ) : (
+                "Register"
+              )}
+              </button>
             </fieldset>
           </form>
           <div className="divider text-gray-400 text-sm">OR LOGIN WITH</div>
           <div className="flex justify-center gap-4">
             <button
               onClick={handleGoogleIn}
-              className="btn bg-white text-black border-primary/50"
+              disabled={loading}
+              className={`btn bg-white text-black border-primary/50  ${loading ? "opacity-30 cursor-not-allowed" : ""}`}
             >
               <svg
                 aria-label="Google logo"

@@ -16,6 +16,7 @@ const Login = () => {
   } = useForm();
   const axiosSecure = useAxiosSecure();
   const { loginGoogle, loginUser } = useAuth();
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const email = useWatch({
@@ -24,6 +25,8 @@ const Login = () => {
   });
 
   const handleGoogleIn = () => {
+    if (loading) return;
+    setLoading(true);
     loginGoogle()
       .then((result) => {
         const user = result.user;
@@ -37,31 +40,17 @@ const Login = () => {
           createdAt: new Date(),
         };
 
-        axiosSecure
-          .post("/users", profileInfo)
-          .then((res) => {
-            if (res.data.insertedId) {
-              Swal.fire({
-                title: "Success..!",
-                text: "Login successfully!",
-                icon: "success",
-              });
-            }
-          })
-          .catch((error) => {
-            Swal.fire({
-              title: "Something Went Wrong...!",
-              text: `${error.message}`,
-              icon: "error",
-              confirmButtonText: "Try Again",
-            });
-          });
-        navigate(location?.state || "/");
+        return axiosSecure.post("/users", profileInfo);
+      })
+      .then(() => {
         Swal.fire({
           title: "Success..!",
           text: "Login successfully!",
           icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
         });
+        navigate(location?.state || "/");
       })
       .catch((error) => {
         Swal.fire({
@@ -70,16 +59,23 @@ const Login = () => {
           icon: "error",
           confirmButtonText: "Try Again",
         });
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
   const handleLogin = (data) => {
+    if (loading) return;
+    setLoading(true);
     loginUser(data.email, data.password)
       .then(() => {
         Swal.fire({
           title: "Success..!",
           text: "Sign In successfully!",
           icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
         });
         navigate(location.state || "/");
         reset();
@@ -91,6 +87,9 @@ const Login = () => {
           icon: "error",
           confirmButtonText: "Try Again",
         });
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -127,7 +126,7 @@ const Login = () => {
               <input
                 type="email"
                 {...register("email", { required: true })}
-                className="input border-primary/50"
+                className="input border-primary/50 outline-primary "
                 placeholder="Email"
               />
               {errors.email?.type === "required" && (
@@ -144,7 +143,7 @@ const Login = () => {
                     required: true,
                     pattern: /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
                   })}
-                  className="input font-sans border-primary/50"
+                  className="input font-sans border-primary/50 outline-primary "
                   placeholder="Password"
                 />
                 {errors.password?.type === "required" && (
@@ -157,6 +156,7 @@ const Login = () => {
                   </p>
                 )}
                 <button
+                  type="button"
                   onClick={handleToggleShow}
                   className=" cursor-pointer absolute right-4 top-3 border-none bg-transparent"
                 >
@@ -172,7 +172,13 @@ const Login = () => {
                   Forgot password?
                 </Link>
               </div>
-              <button className="btn btn-primary mt-4">Login</button>
+              
+              <button type="submit" disabled ={loading} className="btn btn-primary mt-4">{loading ? (
+                <span className="loading loading-spinner"></span>
+              ) : (
+                "Login"
+              )}
+              </button>
             </fieldset>
           </form>
           <div className="divider text-gray-400 text-sm">OR LOGIN WITH</div>
@@ -180,8 +186,9 @@ const Login = () => {
           <div className="flex justify-center gap-4">
             <button
               onClick={handleGoogleIn}
-              className="btn bg-white text-black border-primary/50"
-            >
+              disabled={loading}
+              className={`btn bg-white text-black border-primary/50  ${loading ? "opacity-30 cursor-not-allowed" : ""}`}
+            > 
               <svg
                 aria-label="Google logo"
                 width="16"
@@ -214,7 +221,11 @@ const Login = () => {
           </div>
           <p className="text-center mt-6 text-sm">
             Don't have an account?{" "}
-            <Link state={location.state} to="/register" className="link link-primary font-bold">
+            <Link
+              state={location.state}
+              to="/register"
+              className="link link-primary font-bold"
+            >
               Sign up
             </Link>
           </p>

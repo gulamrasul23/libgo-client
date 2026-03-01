@@ -2,11 +2,13 @@ import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import useAuth from '../../../hooks/useAuth';
 import Swal from 'sweetalert2';
+import { useState } from 'react';
 
 const AllUsers = () => {
     const axiosSecure = useAxiosSecure();
+    const [loading,setLoading] = useState(false);
     const { user: authUser } = useAuth();
-    const { data: users = [], refetch } = useQuery({
+    const { data: users = [], refetch,isLoading } = useQuery({
         queryKey: ['users',],
         queryFn: async () => {
             const res = await axiosSecure.get('/users');
@@ -14,6 +16,8 @@ const AllUsers = () => {
         }
     })
     const handleRole = (id, userRole, userTypeInfo) => {
+        if(loading) return;
+        setLoading(true);
         axiosSecure.patch(`/users/${id}`, { role: userRole, userType: userTypeInfo })
             .then(res => {
                 if (res.data.modifiedCount > 0) {
@@ -31,8 +35,18 @@ const AllUsers = () => {
                     icon: "error",
                     confirmButtonText: "Try Again",
                 });
+            }).finally(() => {
+                setLoading(false);
             })
     };
+
+    if (isLoading) {
+    return (
+      <div className="min-h-[calc(100vh-285px)] flex items-center justify-center bg-base-100">
+        <span className="loading loading-bars loading-xl "></span>
+      </div>
+    );
+  };
 
     return (
         <div className="min-h-screen bg-base-200 p-4 md:p-8 font-sans">
@@ -88,15 +102,15 @@ const AllUsers = () => {
                                         <td>
                                             {
                                                 user.role !== 'librarian' ?
-                                                    <button onClick={() => handleRole(user._id, 'librarian', 'Merchant User')} className='btn btn-secondary btn-sm' disabled={user.email === authUser.email}>Make Librarian</button>
+                                                    <button onClick={() => handleRole(user._id, 'librarian', 'Merchant User')} className='btn btn-secondary btn-sm' disabled={ loading || user.email === authUser.email }>Make Librarian</button>
                                                     : user.role === 'librarian' ?
-                                                        <button onClick={() => handleRole(user._id, 'customer', 'General User')} className='btn btn-secondary btn-sm' disabled={user.email === authUser.email}>Make Customer</button>
+                                                        <button onClick={() => handleRole(user._id, 'customer', 'General User')} className='btn btn-secondary btn-sm' disabled={loading || user.email === authUser.email}>Make Customer</button>
                                                         : <button className='btn btn-secondary btn-sm' disabled={user.email === authUser.email}>Make Customer</button>
                                             }
                                         </td>
                                         <td>
                                             {
-                                                user.role !== 'admin' ? <button onClick={() => handleRole(user._id, 'admin', 'Administrator')} className='btn btn-primary btn-sm' disabled={user.email === authUser.email}>Make Admin</button> : (user.role === 'admin') ? <button onClick={() => handleRole(user._id, 'customer', 'General User')} className='btn btn-primary btn-sm' disabled={user.email === authUser.email}>Make Customer</button> : <button className='btn btn-primary btn-sm' disabled={user.email === authUser.email}>Make Customer</button>
+                                                user.role !== 'admin' ? <button onClick={() => handleRole(user._id, 'admin', 'Administrator')} className='btn btn-primary btn-sm' disabled={loading ||user.email === authUser.email}>Make Admin</button> : (user.role === 'admin') ? <button onClick={() => handleRole(user._id, 'customer', 'General User')} className='btn btn-primary btn-sm' disabled={loading ||user.email === authUser.email}>Make Customer</button> : <button className='btn btn-primary btn-sm' disabled={user.email === authUser.email}>Make Customer</button>
                                             }
                                         </td>
                                     </tr>)}

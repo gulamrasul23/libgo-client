@@ -1,20 +1,59 @@
-import logo from '../../../assets/logo11.png'
+import { Link } from "react-router";
+import logo from "../../../assets/logo11.png";
 import { FaXTwitter } from "react-icons/fa6";
 
 const Footer = () => {
   return (
     <div>
       <footer className="footer footer-horizontal footer-center bg-primary/30 p-8">
-        <aside >
+        <aside>
           <div className="flex flex-col justify-center items-center">
             <div className="w-20 pb-3">
               <img src={logo} alt="logo" />
             </div>
-            <p className="font-bold">
+            <p className="font-bold text-lg">
               LibGo is a library to home book service.
               <br />
               Providing reliable tech since 1992
             </p>
+            <ul className="grid grid-cols-3 gap-2 gap-x-4 list-none p-4 font-medium">
+              <li>
+                <Link
+                  to="/"
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
+                  className="hover:text-secondary "
+                >
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="hover:text-secondary ">
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog" className="hover:text-secondary ">
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link to="/books" className="hover:text-secondary ">
+                  Explore
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="hover:text-secondary ">
+                  Help
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="hover:text-secondary ">
+                  About Us
+                </Link>
+              </li>
+            </ul>
             <p>Copyright © {new Date().getFullYear()} - All right reserved</p>
           </div>
         </aside>

@@ -21,30 +21,26 @@ const AddBook = () => {
 
   const handleAddBook = async (data) => {
     setLoading(true);
-    const bookImg = data.photo[0];
+    const files = Array.from(data.photo);
     const options = {
       maxSizeMB: 1.5,
       maxWidthOrHeight: 1000,
       useWebWorker: true,
     };
-    let compressedFile;
-    try {
-      compressedFile = await imageCompression(bookImg, options);
-    } catch (error) {
-      Swal.fire({
-        title: "Something Went Wrong...!",
-        text: `${error.message}`,
-        icon: "error",
-        confirmButtonText: "Try Again",
-      });
-      return;
-    }
-    const formData = new FormData();
-    formData.append("image", compressedFile);
     const image_api_url = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_key}`;
-    axios.post(image_api_url, formData).then((res) => {
+    try {
+      const uploadPromises = files.map(async (file) => {
+        const compressedFile = await imageCompression(file, options);
+        const formData = new FormData();
+        formData.append("image", compressedFile);
+        const res = await axios.post(image_api_url, formData);
+        return res.data.data.url;
+      });
+      const uploadedImageUrls = await Promise.all(uploadPromises);
+
       const bookInfo = {
-        bookImage: res.data.data.url,
+        bookImage: uploadedImageUrls[0],
+        galleryImages: uploadedImageUrls,
         bookTitle: data.bookTitle,
         author: data.author,
         status: data.status,
@@ -57,29 +53,27 @@ const AddBook = () => {
         createdAt: new Date(),
       };
 
-      axiosSecure
-        .post("/books/add-book", bookInfo)
-        .then((res) => {
-          if (res.data.insertedId) {
-            reset();
-            Swal.fire({
-              title: "Success..!",
-              text: "Added a book successfully",
-              icon: "success",
-            });
-            navigate("/books");
-          }
-        })
-        .catch((error) => {
-          Swal.fire({
-            title: "Something Went Wrong...!",
-            text: `${error.message}`,
-            icon: "error",
-            confirmButtonText: "Try Again",
-          });
+      const res = await axiosSecure.post("/books/add-book", bookInfo);
+
+      if (res.data.insertedId) {
+        reset();
+        Swal.fire({
+          title: "Success..!",
+          text: "Added a book successfully",
+          icon: "success",
         });
+        navigate("/books");
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Something Went Wrong...!",
+        text: `${error.message}`,
+        icon: "error",
+        confirmButtonText: "Try Again",
+      });
+    } finally {
       setLoading(false);
-    });
+    }
   };
 
   return (
@@ -132,6 +126,7 @@ const AddBook = () => {
               </label>
               <input
                 type="file"
+                multiple
                 {...register("photo", { required: true })}
                 className="file-input file-input-bordered file-input-primary w-full  file-input-md"
               />

@@ -1,17 +1,15 @@
 import { Autoplay, EffectCoverflow, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import 'swiper/css';
-import 'swiper/css/effect-coverflow';
-import 'swiper/css/pagination';
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
 
 const Type = ({ types }) => {
   return (
-    <div className="py-4 px-4 max-w-7xl mx-auto">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-bold text-primary">
-          Curated Collections
-        </h2>
-        <p className="text-gray-500 mt-3 text-base md:text-lg">
+    <div className="py-8 pb-16 px-4 max-w-7xl mx-auto">
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-bold text-primary">Curated Collections</h2>
+        <p className="text-base-content/70 mt-2 text-base md:text-lg">
           Explore our handpicked categories for every mood
         </p>
       </div>
@@ -32,7 +30,7 @@ const Type = ({ types }) => {
         }}
         autoplay={{
           delay: 2000,
-          disableOnInteraction: false
+          disableOnInteraction: false,
         }}
         pagination={true}
         modules={[EffectCoverflow, Pagination, Autoplay]}
@@ -40,9 +38,7 @@ const Type = ({ types }) => {
       >
         {types.map((item, ind) => (
           <SwiperSlide key={ind}>
-            <div
-              className="relative h-64 md:h-80 rounded-xl overflow-hidden group cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300"
-            >
+            <div className="relative h-64 md:h-80 rounded-xl overflow-hidden group cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300">
               <img
                 src={item.image}
                 alt={item.genre}

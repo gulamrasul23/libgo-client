@@ -1,207 +1,273 @@
-import { Trash2, BookOpen, CheckCircle, XCircle } from 'lucide-react';
-import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import { useQuery } from '@tanstack/react-query';
-import Swal from 'sweetalert2';
+import { useEffect, useState } from "react";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { useQuery } from "@tanstack/react-query";
+import { IoFilterSharp } from "react-icons/io5";
+import { Search, Filter } from "lucide-react";
+import ManageBooksCard from "./ManageBooksCard/ManageBooksCard";
 
 const ManageBooks = () => {
+  const axiosSecure = useAxiosSecure();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [appliedPriceFilters, setAppliedPriceFilters] = useState([]);
+  const [appliedDateFilters, setAppliedDateFilters] = useState([]);
+  const [sortOrder, setSortOrder] = useState("none");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
-    const axiosSecure = useAxiosSecure();
-    const { data: books = [], refetch } = useQuery({
-        queryKey: ['books'],
-        queryFn: async () => {
-            const res = await axiosSecure.get('/books/manage-books');
-            return res.data;
-        }
-    });
+  const {
+    data: { books = [], totalBooks = 0 } = {},
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: [
+      "books",
+      searchTerm,
+      appliedPriceFilters,
+      appliedDateFilters,
+      currentPage,
+    ],
+    queryFn: async () => {
+      const params = new URLSearchParams();
 
-    const handlePublished = (id, bookStatus) => {
-        axiosSecure.patch(`/books/manage-books/${id}`, { status: bookStatus })
-            .then(res => {
-                if (res.data.modifiedCount > 0) {
-                    Swal.fire({
-                        title: "Success..!",
-                        text: `${bookStatus} Successfully`,
-                        icon: "success",
-                    });
-                    refetch();
-                }
-            }).catch(error => {
-                Swal.fire({
-                    title: "Something Went Wrong...!",
-                    text: `${error.message}`,
-                    icon: "error",
-                    confirmButtonText: "Try Again",
-                });
-            })
+      params.append("page", currentPage);
+      params.append("limit", itemsPerPage);
+
+      if (searchTerm) {
+        params.append("searchText", searchTerm);
+      }
+      appliedPriceFilters.forEach((price) =>
+        params.append("priceFilters", price),
+      );
+      appliedDateFilters.forEach((date) => params.append("dateFilters", date));
+
+      const res = await axiosSecure.get(`/books/manage-books`, { params });
+      return res.data;
+    },
+    keepPreviousData: true,
+  });
+
+  const handleApplyFilter = () => {
+    setCurrentPage(1);
+    const elem = document.activeElement;
+    if (elem) {
+      elem?.blur();
     }
+  };
 
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                axiosSecure.delete(`/books/manage-books/${id}`)
-                    .then(res => {
-                        if (res.data.deletedCount > 0) {
-                            axiosSecure.delete(`/orders/book/${id}`)
-                                .then(res => {
-                                    if (res.data.deletedCount > 0) {
-                                        Swal.fire({
-                                            title: "Deleted!",
-                                            text: "Your file has been deleted.",
-                                            icon: "success"
-                                        });
-                                        refetch();
-                                    }
-                                    Swal.fire({
-                                        title: "Deleted!",
-                                        text: "Your file has been deleted.",
-                                        icon: "success"
-                                    });
-                                    refetch();
-                                }).catch(error => {
-
-                                    console.log(error)
-                                    Swal.fire({
-                                        title: "Something Went Wrong...!",
-                                        text: `${error.message}`,
-                                        icon: "error",
-                                        confirmButtonText: "Try Again",
-                                    });
-                                })
-                        }
-                    }).catch(error => {
-                        Swal.fire({
-                            title: "Something Went Wrong...!",
-                            text: `${error.message}`,
-                            icon: "error",
-                            confirmButtonText: "Try Again",
-                        });
-                    })
-            }
-        });
+  const sortBooks = (() => {
+    if (sortOrder === "price-low") {
+      return [...books].sort((a, b) => a.price - b.price);
+    } else if (sortOrder === "price-high") {
+      return [...books].sort((a, b) => b.price - a.price);
+    } else {
+      return books;
     }
+  })();
 
-    return (
-        <div className="bg-base-200 min-h-screen p-4 lg:p-8 font-sans">
-            <title>LibGo_Manage_Books</title>
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                <div className='text-center md:text-left'>
-                    <h1 className="text-3xl font-bold text-primary">Manage Books</h1>
-                    <p className="text-base-content/60 mt-1">
-                        Admin dashboard for publishing and managing library inventory.
-                    </p>
-                </div>
-                <div className="stats shadow bg-base-100 w-full md:w-auto border border-base-200">
-                    <div className="stat px-4 py-3">
-                        <div className="stat-figure text-primary">
-                            <BookOpen size={32} />
-                        </div>
-                        <div className="stat-title">Total Books</div>
-                        <div className="stat-value text-primary">{books.length}</div>
-                        <div className="stat-desc">Added by librarians</div>
-                    </div>
-                </div>
-            </div>
-            <div className="card bg-base-100 shadow-xl border border-base-200 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="table w-full">
-                        <thead className="bg-base-200/50 text-base-content/70 uppercase text-xs font-bold tracking-wider">
-                            <tr>
-                                <th className="py-4 pl-6 w-[35%]">Book Details</th>
-                                <th>Librarian</th>
-                                <th>Price</th>
-                                <th className='text-center'>Status</th>
-                                <th></th>
-                                <th className="text-right pr-6">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {books.length === 0 ? (
-                                <tr>
-                                    <td colSpan="5" className="text-center py-10 text-base-content/50">
-                                        No books found.
-                                    </td>
-                                </tr>
-                            ) : (
-                                books.map((book) => (
-                                    <tr key={book._id} className="hover:bg-base-200/30 transition-colors border-b border-base-200 last:border-none">
-                                        <td className="pl-6">
-                                            <div className="flex items-center gap-4">
-                                                <div className="avatar shadow-sm rounded-md">
-                                                    <div className="w-12 h-16 rounded overflow-hidden">
-                                                        <img src={book.bookImage} alt={book.bookTitle} className="object-cover" />
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div className="font-bold text-lg text-base-content">{book.bookTitle}</div>
-                                                    <div className="text-sm text-base-content/60">{book.author}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div className="flex items-center gap-2">
-                                                <div className="avatar">
-                                                    <div className="bg-neutral text-neutral-content rounded-full w-8 h-8 flex items-center justify-center">
-                                                        <img referrerPolicy="no-referrer"
-                                                            src={book.librarianPhotoUrl ? book.librarianPhotoUrl : "/user-icon.png"}
-                                                            onError={(e) => {
-                                                                e.target.src = "/user-icon.png";
-                                                            }}
-                                                            alt={book.librarianName}
-                                                            className="h-full w-full object-cover" />
-                                                    </div>
-                                                </div>
-                                                <div className="flex flex-col">
-                                                    <span className="font-medium text-sm text-base-content">{book.librarianName}</span>
-                                                    <span className="text-xs text-base-content/50">{book.librarianEmail}</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div className="font-bold text-base-content/80">
-                                                ${book.price}
-                                            </div>
-                                        </td>
-                                        <td className='text-center'>
-                                            <span className={`px-2 py-1 font-medium rounded-xl ${book.status === "Unpublished"
-                                                ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}`}>{book.status}</span>
-                                        </td>
-                                        <td >
-                                            <div className='flex justify-center'>
-                                                {
-                                                    book.status === 'Unpublished' ? <button onClick={() => handlePublished(book._id, 'Published')} className='btn btn-primary btn-sm flex'>
-                                                        <CheckCircle size={14} /><span> Published</span>
-                                                    </button> : <button onClick={() => handlePublished(book._id, 'Unpublished')} className='btn btn-secondary btn-sm flex'>
-                                                        <XCircle size={14} /><span> Unpublished</span>
-                                                    </button>
-                                                }
-                                            </div>
-                                        </td>
-                                        <td className="text-right pr-6">
-                                            <button
-                                                onClick={() => handleDelete(book._id)}
-                                                className="btn btn-ghost btn-sm text-error hover:bg-error/10 hover:text-error transition-colors tooltip tooltip-left"
-                                                data-tip="Delete Book"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+    setCurrentPage(1);
+    setAppliedPriceFilters((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
     );
+  };
+
+  const handleDateChange = (e) => {
+    const value = e.target.value;
+    setCurrentPage(1);
+    setAppliedDateFilters((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+    );
+  };
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [books]);
+
+  const totalPages = Math.ceil(totalBooks / itemsPerPage);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[calc(100vh-285px)] flex items-center justify-center bg-base-100">
+        <span className="loading loading-bars loading-xl "></span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-base-200 min-h-screen pt-0 sm:pt-4 p-4 lg:p-8 font-sans">
+      <title>LibGo_Manage_Books</title>
+      <div className="flex flex-col md:flex-row justify-between lg:items-start md:items-center mb-6 gap-4">
+        <div className="text-center md:text-left">
+          <h1 className="text-3xl font-bold text-primary">Manage Books</h1>
+          <p className="text-base-content/60 mt-1">
+            Admin dashboard for publishing and managing library inventory.
+          </p>
+        </div>
+        <div className="flex sm:flex-row sm:items-center justify-between gap-4">
+          <div className="dropdown">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn m-1 border-2 border-primary/50 bg-base-100"
+            >
+              <IoFilterSharp />
+              Filter
+            </div>
+            <ul
+              tabIndex="-1"
+              className="dropdown-content menu bg-base-100 rounded-box z-1 w-42 p-2 shadow-sm"
+            >
+              <li>
+                <label className="font-bold">Price :</label>
+                <label className="label text-base-content">
+                  1. $10-$200{" "}
+                  <input
+                    type="checkbox"
+                    value={"10-200"}
+                    onChange={handlePriceChange}
+                    className="checkbox checkbox-sm checkbox-success"
+                  />
+                </label>
+                <label className="label text-base-content">
+                  2. $201-$400{" "}
+                  <input
+                    type="checkbox"
+                    value={"201-400"}
+                    onChange={handlePriceChange}
+                    className="checkbox checkbox-sm checkbox-success"
+                  />
+                </label>
+                <label className="label text-base-content">
+                  3. $401-$1000{" "}
+                  <input
+                    type="checkbox"
+                    value={"401-1000"}
+                    onChange={handlePriceChange}
+                    className="checkbox checkbox-sm checkbox-success"
+                  />
+                </label>
+              </li>
+              <li>
+                <label className="font-bold">Date :</label>
+                <label className="label text-base-content">
+                  1. Last 7 days
+                  <input
+                    type="checkbox"
+                    value={"7"}
+                    onChange={handleDateChange}
+                    className="checkbox checkbox-sm checkbox-success"
+                  />
+                </label>
+                <label className="label text-base-content">
+                  2. Last 30 days{" "}
+                  <input
+                    type="checkbox"
+                    value={"30"}
+                    onChange={handleDateChange}
+                    className="checkbox checkbox-sm checkbox-success"
+                  />
+                </label>
+                <label className="label text-base-content">
+                  2. Last 90 days{" "}
+                  <input
+                    type="checkbox"
+                    value={"90"}
+                    onChange={handleDateChange}
+                    className="checkbox checkbox-sm checkbox-success"
+                  />
+                </label>
+              </li>
+              <li className="p-2">
+                <button
+                  onClick={handleApplyFilter}
+                  className="btn btn-primary hover:btn-secondary "
+                >
+                  Apply
+                </button>
+              </li>
+            </ul>
+          </div>
+          <div className="flex flex-col sm:flex-row items-end sm:items-center pt-1 sm:pt-0  gap-2 ">
+            <div className="relative group ">
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors"
+                size={20}
+              />
+              <input
+                type="text"
+                placeholder="Search books.."
+                className="pl-10 py-2.5 max-w-64 border-transparent rounded-xl text-sm  focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none bg-base-100"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
+              />
+            </div>
+            <div>
+              <select
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+                className="select w-[145px] border-2 border-primary/50 font-medium cursor-pointer outline-none"
+              >
+                <option value="none" disabled={true}>
+                  Sort By Price
+                </option>
+                <option value="price-low">Low-High</option>
+                <option value="price-high">High-Low</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ManageBooksCard
+        sortBooks={sortBooks}
+        isLoading={isLoading}
+        refetch={refetch}
+      ></ManageBooksCard>
+      {!isLoading && totalPages > 1 && (
+        <div className="flex justify-center mt-12 mb-8">
+          <div className="join border border-base-300 shadow-sm rounded-xl">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="join-item btn btn-md bg-base-100 hover:bg-primary hover:text-white border-none disabled:opacity-50"
+            >
+              «
+            </button>
+
+            {[...Array(totalPages)].map((_, index) => {
+              const pageNum = index + 1;
+              return (
+                <button
+                  key={pageNum}
+                  onClick={() => setCurrentPage(pageNum)}
+                  className={`join-item btn btn-md border-none ${
+                    currentPage === pageNum
+                      ? "bg-primary text-white"
+                      : "bg-base-100 hover:bg-base-200"
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+
+            <button
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              disabled={currentPage === totalPages}
+              className="join-item btn btn-md bg-base-100 hover:bg-primary hover:text-white border-none disabled:opacity-50"
+            >
+              »
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default ManageBooks;

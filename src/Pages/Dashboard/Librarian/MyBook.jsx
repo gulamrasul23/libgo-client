@@ -7,7 +7,7 @@ const MyBooks = () => {
   const axiosSecure = useAxiosSecure();
   const { user, loading } = useAuth();
 
-  const { data: books = [] } = useQuery({
+  const { data: books = [], isLoading } = useQuery({
     queryKey: ["books", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
@@ -15,6 +15,14 @@ const MyBooks = () => {
       return res.data;
     },
   });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[calc(100vh-285px)] flex items-center justify-center bg-base-100">
+        <span className="loading loading-bars loading-xl "></span>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-base-200/60 py-5 md:py-10 px-4 md:px-8">
@@ -24,7 +32,8 @@ const MyBooks = () => {
           <div className=" text-center md:text-left">
             <h1 className="text-3xl font-bold text-primary">My Books</h1>
             <p className="text-gray-500 mt-1">
-              Manage your library inventory here. <span>You have total ( {books.length} ) books.</span>
+              Manage your library inventory here.{" "}
+              <span>You have total ( {books.length} ) books.</span>
             </p>
           </div>
           <Link
@@ -63,9 +72,10 @@ const MyBooks = () => {
                     <td className="p-4 text-center">
                       <span
                         className={`inline-block px-3 py-1 text-xs font-semibold rounded-full 
-                          ${book.status === "Published"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
+                          ${
+                            book.status === "Published"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-700"
                           }`}
                       >
                         {book.status === "Published"

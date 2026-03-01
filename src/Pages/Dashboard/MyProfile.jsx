@@ -1,9 +1,4 @@
-import {
-  FaUser,
-  FaEnvelope,
-  FaCalendarAlt,
-  FaSave,
-} from "react-icons/fa";
+import { FaUser, FaEnvelope, FaCalendarAlt, FaSave } from "react-icons/fa";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import imageCompression from "browser-image-compression";
@@ -11,7 +6,7 @@ import useAuth from "../../hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { Navigate } from "react-router";
+import { Navigate, useLocation, useNavigate } from "react-router";
 import useRole from "../../hooks/useRole";
 import { useEffect, useState } from "react";
 const MyProfile = () => {
@@ -25,8 +20,14 @@ const MyProfile = () => {
   } = useForm();
   const { user, updateUser } = useAuth();
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const { data: thisUser = {}, refetch } = useQuery({
+  const {
+    data: thisUser = {},
+    refetch,
+    isLoading,
+  } = useQuery({
     queryKey: ["user", user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
@@ -34,12 +35,12 @@ const MyProfile = () => {
       return res.data;
     },
   });
-
+  const displayName = thisUser?.displayName;
   useEffect(() => {
-    if (thisUser) {
-      reset({ name: thisUser.displayName })
+    if (displayName) {
+      reset({ name: displayName });
     }
-  }, [thisUser, reset])
+  }, [displayName, reset]);
 
   const handleUpdate = async (data) => {
     setLoading(true);
@@ -92,9 +93,11 @@ const MyProfile = () => {
           .patch(`/users?email=${user.email}`, userProfile)
           .then((res) => {
             if (res.data.modifiedCount > 0) {
-
-              if (role === 'librarian') {
-                axiosSecure.patch(`/books/manage-books?email=${user.email}`, { librarianPhotoUrl: profileImgUrl })
+              if (role === "librarian") {
+                axiosSecure
+                  .patch(`/books/manage-books?email=${user.email}`, {
+                    librarianPhotoUrl: profileImgUrl,
+                  })
                   .then((res) => {
                     if (res.data.modifiedCount > 0) {
                       reset();
@@ -105,7 +108,8 @@ const MyProfile = () => {
                       });
                       refetch();
                     }
-                  }).catch((error) => {
+                  })
+                  .catch((error) => {
                     Swal.fire({
                       title: "Something Went Wrong...!",
                       text: `${error.message}`,
@@ -122,7 +126,6 @@ const MyProfile = () => {
                 });
                 refetch();
               }
-
             }
           })
           .catch((error) => {
@@ -143,10 +146,24 @@ const MyProfile = () => {
         });
       });
     setLoading(false);
-
   };
-  if (role === 'admin') {
-    return <Navigate to="/dashboard/admin-profile" replace></Navigate>
+  const email = user?.email;
+  const handleUpdatePassword = () => {
+    navigate("/reset", {
+      state: { email, from: location.pathname },
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[calc(100vh-285px)] flex items-center justify-center bg-base-100">
+        <span className="loading loading-bars loading-xl "></span>
+      </div>
+    );
+  }
+
+  if (role === "admin") {
+    return <Navigate to="/dashboard/admin-overview" replace></Navigate>;
   }
 
   return (
@@ -261,7 +278,7 @@ const MyProfile = () => {
               </label>
               <input
                 type="text"
-                value={thisUser?.email || ''}
+                value={thisUser?.email || ""}
                 readOnly
                 className="input input-bordered w-full bg-base-200 text-base-content/50 cursor-not-allowed h-10 text-sm"
               />
@@ -274,11 +291,24 @@ const MyProfile = () => {
                 {loading ? (
                   <span className="loading loading-spinner"></span>
                 ) : (
-                  <><FaSave />Save Changes</>
+                  <>
+                    <FaSave />
+                    Save Changes
+                  </>
                 )}
               </button>
             </div>
           </form>
+          <div className="mt-2">
+            <button
+              type="button"
+              onClick={handleUpdatePassword}
+              className="btn btn-info hover:btn-secondary w-full shadow-lg shadow-primary/20"
+            >
+              <FaSave />
+              Update Password
+            </button>
+          </div>
         </div>
       </div>
     </div>

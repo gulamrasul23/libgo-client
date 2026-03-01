@@ -9,7 +9,7 @@ const LibrarianOrders = () => {
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
 
-    const { data: orders = [], refetch } = useQuery({
+    const { data: orders = [], refetch,isLoading } = useQuery({
         queryKey: ["orderCustomers", user.email, "paid"],
         queryFn: async () => {
             const res = await axiosSecure.get(
@@ -51,6 +51,14 @@ const LibrarianOrders = () => {
             default: return 'badge-ghost';
         }
     };
+
+    if (isLoading) {
+    return (
+      <div className="min-h-[calc(100vh-285px)] flex items-center justify-center bg-base-100">
+        <span className="loading loading-bars loading-xl "></span>
+      </div>
+    );
+  };
 
     return (
         <div className="min-h-screen bg-base-200 p-4 md:p-8 font-sans">

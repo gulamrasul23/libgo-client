@@ -50,7 +50,7 @@ const Navbar = () => {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `hover:bg-base-content/10 ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
+                `hover:bg-base-content/10 font-semibold ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
               }
             >
               Home
@@ -60,25 +60,52 @@ const Navbar = () => {
             <NavLink
               to="/books"
               className={({ isActive }) =>
-                `hover:bg-base-content/10 ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
+                `hover:bg-base-content/10 font-semibold ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
               }
             >
               Books
             </NavLink>
           </li>{" "}
-          <>
-            <li onClick={() => setDropdownOpen(false)}>
-              <NavLink
-                to="/dashboard"
-                className={({ isActive }) =>
-                  `hover:bg-base-content/10 ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
-                }
-              >
-                Dashboard
-              </NavLink>
-            </li>
-
-          </>
+          <li onClick={() => setDropdownOpen(false)}>
+            <NavLink
+              to="/dashboard"
+              className={({ isActive }) =>
+                `hover:bg-base-content/10 font-semibold ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
+              }
+            >
+              Dashboard
+            </NavLink>
+          </li>
+          <li onClick={() => setDropdownOpen(false)}>
+            <NavLink
+              to="/blog"
+              className={({ isActive }) =>
+                `hover:bg-base-content/10 font-semibold ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
+              }
+            >
+              Blog
+            </NavLink>
+          </li>
+          <li onClick={() => setDropdownOpen(false)}>
+            <NavLink
+              to="/about"
+              className={({ isActive }) =>
+                `hover:bg-base-content/10 font-semibold ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
+              }
+            >
+              About
+            </NavLink>
+          </li>
+          <li onClick={() => setDropdownOpen(false)}>
+            <NavLink
+              to="/contact"
+              className={({ isActive }) =>
+                `hover:bg-base-content/10 font-semibold ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
+              }
+            >
+              Contact
+            </NavLink>
+          </li>
         </>
       ) : (
         <>
@@ -86,7 +113,7 @@ const Navbar = () => {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `hover:bg-base-content/10 ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
+                `hover:bg-base-content/10 font-semibold ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
               }
             >
               Home
@@ -96,7 +123,7 @@ const Navbar = () => {
             <NavLink
               to="/books"
               className={({ isActive }) =>
-                `hover:bg-base-content/10 ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
+                `hover:bg-base-content/10 font-semibold ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
               }
             >
               Books
@@ -104,12 +131,22 @@ const Navbar = () => {
           </li>
           <li onClick={() => setDropdownOpen(false)}>
             <NavLink
-              to="/dashboard"
+              to="/about"
               className={({ isActive }) =>
-                `hover:bg-base-content/10 ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
+                `hover:bg-base-content/10 font-semibold ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
               }
             >
-              Dashboard
+              About
+            </NavLink>
+          </li>
+          <li onClick={() => setDropdownOpen(false)}>
+            <NavLink
+              to="/contact"
+              className={({ isActive }) =>
+                `hover:bg-base-content/10 font-semibold ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : " bg-base-100"}`
+              }
+            >
+              Contact
             </NavLink>
           </li>
         </>
@@ -124,7 +161,7 @@ const Navbar = () => {
           <div className={"dropdown "}>
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="btn btn-ghost pl-2 lg:hidden"
+              className="btn btn-ghost btn-sm p-1 lg:hidden"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -144,7 +181,7 @@ const Navbar = () => {
             </button>
 
             {dropdownOpen && (
-              <ul className="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow font-medium">
+              <ul className="menu menu-md absolute -translate-x-2 dropdown-content bg-base-100 rounded-box z-10 mt-3 w-35 p-2 shadow font-medium">
                 {links}
               </ul>
             )}
@@ -165,17 +202,18 @@ const Navbar = () => {
         </div>
         <div className="navbar-end">
           {user ? (
-            <div className="dropdown dropdown-bottom dropdown-end sm:dropdown-center ">
-              <div
-                tabIndex={0}
-                role="button"
-                className="h-9 w-9 ring ring-primary ring-offset-primary ring-offset-1 rounded-full"
-              >
-                <Link
-                  to="/"
-                  className="cursor-pointer"
-                  data-tip={user.displayName}
+            <>
+              <div className="dropdown dropdown-bottom dropdown-end sm:dropdown-center ">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="h-9 w-9 ring ring-primary ring-offset-primary ring-offset-1 rounded-full"
                 >
+                  {/* <Link
+                    to="/"
+                    className="cursor-pointer"
+                    data-tip={user.displayName}
+                  > */}
                   {user?.photoURL ? (
                     <img
                       src={user?.photoURL}
@@ -183,7 +221,7 @@ const Navbar = () => {
                       onError={(e) => {
                         e.target.src = "/user-icon.png";
                       }}
-                      className=" h-9 w-9 object-cover rounded-full"
+                      className=" h-9 w-9 object-cover rounded-full cursor-pointer"
                     ></img>
                   ) : (
                     <img
@@ -191,29 +229,50 @@ const Navbar = () => {
                       className=" object-cover rounded-full  "
                     ></img>
                   )}
-                </Link>
-              </div>
-              <div
-                tabIndex={0}
-                className="dropdown-content card-sm  bg-base-100 rounded-box z-1 w-56 shadow-2xl"
-              >
-                <div className="card-body font-medium">
-                  <p className="text-[14px]">{user.displayName}</p>
-                  <p>{user.email}</p>
-                  <Link
-                    onClick={handleLogOut}
-                    className="btn btn-primary"
-                    to="/"
+                  {/* </Link> */}
+                </div>
+                <div className="relative">
+                  <div
+                    tabIndex={0}
+                    className="dropdown-content absolute top-2 card-sm  bg-base-100 rounded-box z-1 w-56 shadow-2xl"
                   >
-                    Log Out
-                  </Link>
+                    <div className="card-body font-medium">
+                      <p className="text-[14px]">{user.displayName}</p>
+                      <p>{user.email}</p>
+                      <Link
+                        onClick={handleLogOut}
+                        className="btn btn-primary hover:btn-secondary"
+                        to="/"
+                      >
+                        Log Out
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+              <Link
+                onClick={handleLogOut}
+                className="btn btn-sm sm:btn-md btn-primary hover:btn-secondary ml-2 sm:ml-4"
+                to="/"
+              >
+                Log Out
+              </Link>
+            </>
           ) : (
-            <Link className=" btn btn-primary" to="/login">
-              Login
-            </Link>
+            <>
+              <Link
+                className=" btn btn-primary btn-sm sm:btn-md mr-2 hover:btn-secondary hover:text-white "
+                to="/login"
+              >
+                Login
+              </Link>
+              <Link
+                className=" btn btn-primary btn-sm sm:btn-md hover:btn-secondary hover:text-white "
+                to="/register"
+              >
+                Register
+              </Link>
+            </>
           )}
           <div className="cursor-pointer px-3 gap-2 block sm:hidden">
             <label className="toggle text-base-content ">

@@ -8,7 +8,11 @@ import Swal from "sweetalert2";
 const MyOrder = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
-  const { data: myOrders = [], refetch } = useQuery({
+  const {
+    data: myOrders = [],
+    refetch,
+    isLoading,
+  } = useQuery({
     queryKey: ["my-order", user.email],
     queryFn: async () => {
       const res = await axiosSecure.get(`/orders/my-order?email=${user.email}`);
@@ -21,7 +25,8 @@ const MyOrder = () => {
 
   useEffect(() => {
     if (sessionId) {
-      axiosSecure.patch(`/dashboard/my-order?session_id=${sessionId}`)
+      axiosSecure
+        .patch(`/dashboard/my-order?session_id=${sessionId}`)
         .then((res) => {
           if (res.data.success) {
             Swal.fire({
@@ -31,9 +36,9 @@ const MyOrder = () => {
             });
             refetch();
           }
-        })
+        });
     }
-  }, [sessionId, axiosSecure, refetch])
+  }, [sessionId, axiosSecure, refetch]);
 
   const handlePayment = async (order) => {
     const paymentInfo = {
@@ -41,10 +46,10 @@ const MyOrder = () => {
       bookTitle: order.bookTitle,
       customerEmail: order.customerEmail,
       paymentId: order._id,
-    }
-    const res = await axiosSecure.post('/create-checkout-session', paymentInfo);
+    };
+    const res = await axiosSecure.post("/create-checkout-session", paymentInfo);
     window.location.assign(res.data.url);
-  }
+  };
 
   const handleCancel = (id) => {
     axiosSecure
@@ -70,6 +75,14 @@ const MyOrder = () => {
         });
       });
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[calc(100vh-285px)] flex items-center justify-center bg-base-100">
+        <span className="loading loading-bars loading-xl "></span>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -101,14 +114,17 @@ const MyOrder = () => {
                 </td>
                 <td className="text-center">
                   <span
-                    className={`px-3 py-1 rounded-xl ${order.status === "Pending"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : order.status === "Canceled"
-                        ? "bg-red-100 text-red-800"
-                        : order.status === "Pickup" ? "bg-blue-100 text-blue-800"
-                          : order.status === "Shipped" ? "bg-blue-100 text-blue-800"
-                            : "bg-green-100 text-green-800"
-                      }`}
+                    className={`px-3 py-1 rounded-xl ${
+                      order.status === "Pending"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : order.status === "Canceled"
+                          ? "bg-red-100 text-red-800"
+                          : order.status === "Pickup"
+                            ? "bg-blue-100 text-blue-800"
+                            : order.status === "Shipped"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-green-100 text-green-800"
+                    }`}
                   >
                     {order.status}
                   </span>
@@ -116,7 +132,12 @@ const MyOrder = () => {
                 <td className="text-center">{order.payment}</td>
                 <td>
                   {order.status === "Pending" && order.payment === "Unpaid" && (
-                    <button onClick={() => handlePayment(order)} className="btn btn-sm btn-primary">Pay Now</button>
+                    <button
+                      onClick={() => handlePayment(order)}
+                      className="btn btn-sm btn-primary"
+                    >
+                      Pay Now
+                    </button>
                   )}
                 </td>
                 <td>

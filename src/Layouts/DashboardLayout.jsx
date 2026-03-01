@@ -12,6 +12,7 @@ import { LuSwatchBook } from "react-icons/lu";
 import { FaUsers } from "react-icons/fa";
 import { FaShopify } from "react-icons/fa";
 import { FaBook } from "react-icons/fa";
+import { RiKanbanView } from "react-icons/ri";
 import useRole from "../hooks/useRole";
 import ScrollToTop from "../Components/ScrollToTop";
 
@@ -44,7 +45,7 @@ const DashboardLayout = () => {
       "/dashboard/add-book": "Add Books",
       "/dashboard/my-book": "My Books",
       "/dashboard/orders": "Orders",
-      "/dashboard/users": "All Users",
+      "/dashboard/users": "Manage Users",
       "/dashboard/manage-books": "Manage Books",
       "/dashboard/admin-profile": "My Profile",
     };
@@ -71,7 +72,7 @@ const DashboardLayout = () => {
             className="btn btn-square btn-ghost flex justify-between"
           >
 
-            <GoSidebarCollapse size={22} />
+            <GoSidebarCollapse size={25} />
           </label>
           <div className="flex justify-between w-full">
             <div className="px-4 ">{currentTitle}</div>
@@ -186,13 +187,25 @@ const DashboardLayout = () => {
               <NavLink
                 to="/"
                 data-tip="Homepage"
-                className="is-drawer-close:tooltip is-drawer-close:tooltip-right hover:bg-base-content/10"
+                className="is-drawer-close:tooltip is-drawer-close:tooltip-right hover:bg-base-content/10 pt-3.5 font-bold"
               >
                 <TiHomeOutline size={22} />
                 <span className="is-drawer-close:hidden">Homepage</span>
               </NavLink>
             </li>
-            <li>
+            {role ==="admin" ?<li>
+              <NavLink
+                to="/dashboard/admin-profile"
+                end
+                data-tip="My Profile"
+                className={({ isActive }) =>
+                  `is-drawer-close:tooltip is-drawer-close:tooltip-right hover:bg-base-content/10 ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : ""}`
+                }
+              >
+                <MdManageAccounts size={22} />
+                <span className="is-drawer-close:hidden font-bold ">My Profile</span>
+              </NavLink>
+            </li> : <li>
               <NavLink
                 to="/dashboard"
                 end
@@ -202,9 +215,9 @@ const DashboardLayout = () => {
                 }
               >
                 <MdManageAccounts size={22} />
-                <span className="is-drawer-close:hidden ">My Profile</span>
+                <span className="is-drawer-close:hidden font-bold">My Profile</span>
               </NavLink>
-            </li>
+            </li> }
 
             {<>
               <li>
@@ -216,7 +229,7 @@ const DashboardLayout = () => {
                   }
                 >
                   <GoGift size={20} />
-                  <span className="is-drawer-close:hidden">My Orders</span>
+                  <span className="is-drawer-close:hidden font-bold">My Orders</span>
                 </NavLink>
               </li>
               <li>
@@ -228,7 +241,7 @@ const DashboardLayout = () => {
                   }
                 >
                   <FaFileInvoice size={22} />
-                  <span className="is-drawer-close:hidden">My Invoice</span>
+                  <span className="is-drawer-close:hidden font-bold">My Invoice</span>
                 </NavLink>
               </li>
               <li>
@@ -240,7 +253,7 @@ const DashboardLayout = () => {
                   }
                 >
                   <PiListHeartFill size={24} />
-                  <span className="is-drawer-close:hidden">My Wishlist</span>
+                  <span className="is-drawer-close:hidden font-bold">My Wishlist</span>
                 </NavLink>
               </li>
             </>}
@@ -254,7 +267,7 @@ const DashboardLayout = () => {
                   }
                 >
                   <BiBookAdd size={22} />
-                  <span className="is-drawer-close:hidden">Add Books</span>
+                  <span className="is-drawer-close:hidden font-bold">Add Books</span>
                 </NavLink>
               </li>
               <li>
@@ -266,7 +279,7 @@ const DashboardLayout = () => {
                   }
                 >
                   <FaBook size={20} />
-                  <span className="is-drawer-close:hidden">My Books</span>
+                  <span className="is-drawer-close:hidden font-bold">My Books</span>
                 </NavLink>
               </li>
               <li>
@@ -278,7 +291,7 @@ const DashboardLayout = () => {
                   }
                 >
                   <FaShopify size={20} />
-                  <span className="is-drawer-close:hidden">Orders</span>
+                  <span className="is-drawer-close:hidden font-bold">Orders</span>
                 </NavLink>
               </li>
 
@@ -286,14 +299,27 @@ const DashboardLayout = () => {
             {role === 'admin' && <>
               <li>
                 <NavLink
+                  to="/dashboard/admin-overview"
+                  data-tip="Overview"
+                  end
+                  className={({ isActive }) =>
+                    `is-drawer-close:tooltip is-drawer-close:tooltip-right hover:bg-base-content/10 ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : ""}`
+                  }
+                >
+                  <RiKanbanView size={20} />
+                  <span className="is-drawer-close:hidden font-bold">Overview</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
                   to="/dashboard/users"
-                  data-tip="All Users"
+                  data-tip="Manage Users"
                   className={({ isActive }) =>
                     `is-drawer-close:tooltip is-drawer-close:tooltip-right hover:bg-base-content/10 ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : ""}`
                   }
                 >
                   <FaUsers size={20} />
-                  <span className="is-drawer-close:hidden">All Users</span>
+                  <span className="is-drawer-close:hidden font-bold">Manage Users</span>
                 </NavLink>
               </li>
               <li>
@@ -305,7 +331,7 @@ const DashboardLayout = () => {
                   }
                 >
                   <LuSwatchBook size={20} />
-                  <span className="is-drawer-close:hidden">Manage Books</span>
+                  <span className="is-drawer-close:hidden font-bold">Manage Books</span>
                 </NavLink>
               </li>
             </>}
@@ -315,7 +341,7 @@ const DashboardLayout = () => {
                 data-tip="Settings"
               >
                 <MdOutlineSettings size={22} />
-                <span className="is-drawer-close:hidden">Settings</span>
+                <span className="is-drawer-close:hidden font-bold">Settings</span>
               </button>
             </li>
           </ul>

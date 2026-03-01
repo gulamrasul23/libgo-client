@@ -5,7 +5,7 @@ import useAuth from "../../hooks/useAuth";
 const MyInvoice = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
-  const { data: invoices = [] } = useQuery({
+  const { data: invoices = [], isLoading } = useQuery({
     queryKey: ["invoice", user.email, "paid"],
     queryFn: async () => {
       const res = await axiosSecure.get(
@@ -14,6 +14,14 @@ const MyInvoice = () => {
       return res.data;
     },
   });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[calc(100vh-285px)] flex items-center justify-center bg-base-100">
+        <span className="loading loading-bars loading-xl "></span>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-base-200/60 p-4 md:p-8">
@@ -45,14 +53,11 @@ const MyInvoice = () => {
                       {invoice.transactionId}
                     </td>
                     <td className="p-4 text-sm  whitespace-nowrap">
-                      {new Date(invoice.paidAt).toLocaleDateString(
-                        "en-GB",
-                        {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        },
-                      )}
+                      {new Date(invoice.paidAt).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </td>
                     <td className="p-4 text-sm  font-bold  whitespace-nowrap">
                       ${invoice.amount.toFixed(2)}

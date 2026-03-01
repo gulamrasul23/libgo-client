@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import "@smastrom/react-rating/style.css";
 import { useLoaderData, useNavigate, useParams } from "react-router";
@@ -22,6 +22,13 @@ const BookDetails = () => {
       return res.data;
     },
   });
+  const [activeImage, setActiveImage] = useState(null);
+  useEffect(() => {
+    if (book?.bookImage) {
+      setActiveImage(book.bookImage);
+    }
+  }, [book]);
+  const allImages = [ ...(book?.galleryImages || [])].filter(Boolean);
 
   const {
     register,
@@ -41,13 +48,43 @@ const BookDetails = () => {
   const duplicateRegion = addressPromise.map((r) => r.region);
   const regions = [...new Set(duplicateRegion)];
   const [isOpen, setIsOpen] = useState(false);
-  const handleModal = () => setIsOpen(true);
+  const handleModal = () =>{
+    if (!user) {
+    Swal.fire({
+      title: "Login Required",
+      text: "Please login to buy this book.",
+      icon: "warning",
+      confirmButtonText: "Login",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate("/login", { state: `/book-details/${id}`  });
+      }
+    });
+    return;
+  }
+    setIsOpen(true)
+  };
   const handleModalClose = () => {
     setIsOpen(false);
     reset();
   };
 
   const handleWishlist = () => {
+
+    if (!user) {
+    Swal.fire({
+      title: "Login Required",
+      text: "Please login to add this book to your wishlist.",
+      icon: "info",
+      confirmButtonText: "Login",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate("/login", { state:`/book-details/${id}`});
+      }
+    });
+    return;
+  }
+
     const wishlistData = {
       wishlistId: book._id,
       bookTitle: book.bookTitle,
@@ -101,6 +138,7 @@ const BookDetails = () => {
       payment: "Unpaid",
     };
 
+
     Swal.fire({
       title: "Are you sure?",
       text: `You will be charged ${book.price} taka!`,
@@ -147,21 +185,46 @@ const BookDetails = () => {
   }
 
   return (
-    <div className="bg-base-100 py-19 max-w-7xl mx-auto px-6 md:px-12">
+    <div className="bg-base-100 py-19 max-w-7xl mx-auto px-4 md:px-8">
       <title>LibGo_Book_Details</title>
-      <div className="pb-6 flex md:flex-row flex-col ">
-        <figure className="md:w-2/3 h-[500px] sm:h-[700px] md:h-[500px] lg:h-[600px] rounded-l-xl overflow-hidden shadow-md relative">
-          <img
-            src={book.bookImage}
-            alt={book.bookTitle}
-            className="w-full h-full object-cover  hover:scale-105 transition-transform duration-700 ease-in-out"
-          />
+      <div className="pb-6 flex md:flex-row flex-col ">      
+        <div className="md:w-3/4 flex flex-col gap-4 ">
+          
+         
+          <figure className="w-auto flex items-center justify-center h-[400px] sm:h-[500px] md:h-[442px] lg:h-[550px] rounded-xl overflow-hidden shadow-md relative border border-base-200 bg-base-200/50">
+            <img
+              src={activeImage || book?.bookImage}
+              alt={book?.bookTitle}
+              className=" w-auto h-full object-contain  hover:scale-105 transition-transform duration-700 ease-in-out"
+            />
+          </figure>
 
-          <div className="absolute inset-0 to-transparent pointer-events-none"></div>
-        </figure>
-        <div className=" bg-base-100 shadow-sm border w-full border-base-200 rounded-r-xl overflow-hidden">
-          <div className=" p-6 sm:py-4">
-            <h1 className="text-3xl md:text-5xl font-extrabold sm:mb-2 sm:leading-tight">
+        
+          {allImages.length > 1 && (
+            <div className="inline-flex gap-4 overflow-x-auto pl-1 py-2 ">
+              {allImages.map((img, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveImage(img)}
+                  className={`h-24 p-2 lg:h-28 flex items-center justify-center rounded-md cursor-pointer overflow-hidden border-2 transition-all duration-300 ${
+                    activeImage === img
+                      ? "border-primary scale-105 shadow-md shadow-primary/20"
+                      : "border-transparent opacity-60 hover:opacity-100 hover:scale-105"
+                  }`}
+                >
+                  <img
+                    src={img}
+                    alt={`Gallery thumbnail ${index + 1}`}
+                    className=" h-full w-auto object-contain"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className=" bg-base-100   w-full  rounded-r-xl overflow-hidden">
+          <div className=" py-2 sm:p-6 pr-0 sm:py-4">
+            <h1 className="text-3xl md:text-4xl font-extrabold sm:mb-2 sm:leading-tight">
               {book.bookTitle}
             </h1>
             <div className="flex flex-wrap items-center gap-4 text-base-content/60 font-medium sm:text-lg">
@@ -180,7 +243,7 @@ const BookDetails = () => {
               Posted: {new Date(book.createdAt).toLocaleDateString()}
             </p>
           </div>
-          <div className=" flex flex-col h-[calc(100%-128px)] p-6">
+          <div className=" flex flex-col h-[calc(100%-128px)]  py-2 sm:p-6 pr-0">
             <div className="flex flex-col-reverse lg:flex-row  gap-2 lg:justify-between lg:items-end ">
               <div>
                 <p className="text-base-content/60 font-medium">Book Price</p>
@@ -190,7 +253,7 @@ const BookDetails = () => {
                 <div>
                   <button
                     onClick={handleModal}
-                    className="btn btn-primary  w-full shadow-lg shadow-primary/30 mb-3"
+                    className="btn btn-primary hover:btn-secondary w-full shadow-lg shadow-primary/30 mb-3"
                   >
                     Buy Now
                   </button>
@@ -199,9 +262,9 @@ const BookDetails = () => {
                   </button>
                 </div>
               </div>
-              <div>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="avatar online">
+              <div className="mb-4 sm:mb-0">
+                <div className="flex items-center gap-4 mb-1">
+                  <div className="avatar online pl-1 sm:pl-0">
                     <div className="w-12 rounded-full ring ring-primary ring-offset-primary ring-offset-2">
                       {book?.librarianPhotoUrl ? (
                         <img
@@ -215,7 +278,7 @@ const BookDetails = () => {
                       ) : (
                         <img
                           src="/user-icon.png"
-                          className=" object-cover rounded-full  "
+                          className=" object-cover rounded-full "
                         ></img>
                       )}
                     </div>
