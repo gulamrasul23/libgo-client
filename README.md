@@ -1,52 +1,121 @@
-# LibGo – Library-to-Home Delivery System
+# LibGo
+Library-to-Home Delivery System
 
-**LibGo** is a comprehensive library delivery management system designed to bridge the gap between libraries and readers. It allows users to borrow books from nearby libraries without physical visits, facilitates librarians in managing their inventory, and provides administrators with full system control.
+---
 
-**Live Site URL:** [(https://lib-go-5abe2.web.app/)]
+## Table of Contents
+
+- [About the Project](#about-the-project)
+- [Project Overview](#project-overview)
+- [Key Features](#key-features)
+- [Tech Stack](#tech-stack)
+- [Dependencies](#dependencies)
+- [Installation & Setup](#installation--setup)
+- [Folder Structure](#folder-structure)
+- [Contributions](#contributions)
+- [How to Contribute](#how-to-contribute)
+- [License](#license)
+- [Contact](#contact)
+
+---
+
+## About the Project
+LibGo is a comprehensive library delivery management system designed to bridge the gap between libraries and readers. It allows users to borrow books from nearby libraries without physical visits, making reading more accessible and convenient.
+
+---
 
 ## Project Overview
+The primary goal of LibGo (also known as BookCourier) is to simplify the book borrowing process for students, researchers, and avid readers. The platform ensures a seamless experience from browsing books to having them delivered to the user's doorstep, featuring a robust role-based access control system (User, Librarian, Admin).
 
-The primary goal of BookCourier is to simplify the book borrowing process for students, researchers, and avid readers. The platform ensures a seamless experience from browsing books to having them delivered to the user's doorstep, featuring a robust role-based access control system (User, Librarian, Admin).
+
+---
 
 ## Key Features
+- **Role-Based Dashboard System** — Tailored interfaces and workflows for Users, Librarians, and Admins.
+- **Secure Authentication & Authorization** — Firebase email/social login secured with JWT for private routes.
+- **Advanced Book Management** — Features including search by name, price sorting, categorization, and "Related Books" suggestions.
+- **Smart Borrowing & Payment Flow** — Seamless borrowing modal, real-time status tracking (Pending → Shipped → Delivered), and payment gateway simulation.
+- **Interactive Coverage Map** — A dynamic map built with Leaflet showcasing cities with active delivery service.
+- **Wishlist** — Allows users to save their favorite books for later.
 
-***  Role-Based Dashboard System:**
-    * **User:** Manage orders, track delivery status, wishlist books, and view payment history.
-    * **Librarian:** Add/Update books, manage inventory status (published/unpublished), and handle order workflows (Pending → Shipped → Delivered).
-    * **Admin:** Manage users (promote to Admin/Librarian) and oversee all books and system activities.
-*** Secure Authentication & Authorization:**
-    * Email/Password and Social Login via Firebase.
-    * JWT (JSON Web Token) implementation for securing private routes and API endpoints.
-*** Advanced Book Management:**
-    * Search functionality to find books by name.
-    * Sorting options to filter books by price.
-    * Book categories, details view, and "Related Books" suggestions.
-*** Smart Borrowing & Payment Flow:**
-    * Seamless "Borrow" process with a modal form.
-    * Real-time status tracking (Pending, Paid, Shipped, Delivered).
-    * Integrated payment gateway simulation.
-*** Interactive Coverage Map:**
-    * A dynamic map showcasing all cities where BookCourier service is available using Leaflet maps.
-*** Wishlist:**
-    * Users can add books to a wishlist for later.
-    
+---
 
-## Technologies Used
+## Tech Stack
+**Frontend:** React.js · Tailwind CSS · DaisyUI
+**Backend:** Node.js · Express.js
+**Database:** MongoDB
+**Tools:** Vite · Firebase · JWT · Axios
 
-* **Frontend:** React.js, Tailwind CSS, DaisyUI
-* **Backend:** Node.js, Express.js
-* **Database:** MongoDB
-* **Authentication:** Firebase Auth
-* **Security:** JWT (JSON Web Token)
-* **Tools:** Vite, Axios, React Router
+---
 
-## Main npm Packages Used (Client Side)
+## Dependencies
+```json
+{
+  "react-router-dom": "^6.x",
+  "firebase": "^10.x",
+  "axios": "^1.x",
+  "react-hook-form": "^7.x",
+  "swiper": "^11.x",
+  "react-leaflet": "^4.x",
+  "sweetalert2": "^11.x"
+}
+```
 
-* `react-router`: For single-page application navigation.
-* `firebase`: For authentication and hosting.
-* `axios`: For making secure HTTP requests to the backend.
-* `react-hook-form`: For efficient form handling and validation.
-* `swiper`: For the interactive home page sliders/carousels.
-* `react-leaflet` : For displaying the delivery coverage map.
-* `sweetalert2`: For user-friendly notifications and alerts.
+## Installation️ & Setup
+1. Clone the repo and install dependencies:
 
+```bash
+git clone [https://github.com/gulamrasul23/libgo-client.git](https://github.com/gulamrasul23/libgo-client.git)
+cd libgo-client
+npm install
+```
+
+2. Set up environment variables by creating a `.env` file in the root directory:
+
+```env
+VITE_APIKEY=your_api_Key
+VITE_AUTHDOMAIN=Your_domain
+VITE_PROJECTID=your_project_id
+VITE_STORAGEBUCKET=your_storage_bucekt
+VITE_MESSAGINGSENDERID=your_messaging_sender_id
+VITE_APPID=appId
+
+VITE_image_key=your_image_key
+```
+
+3. Run the application:
+
+```bash
+npm run dev
+```
+
+---
+
+## Folder Structure
+
+```plaintext
+your-project/
+│
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── utils/
+│   └── hooks/
+├── public/
+└── package.json
+```
+
+---
+
+
+
+## License (Optional)
+Distributed under the MIT License. See `LICENSE.txt` for more information.
+
+---
+
+## Contact
+
+**Live URL:** [Live Site](https://lib-go-5abe2.web.app/)
+**Email:** [username](gulamrasulrahim23@gmail.com)
+**Portfolio:** [Portfolio](https://portfolio-six-flame-xjdvqk020y.vercel.app)
