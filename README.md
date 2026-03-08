@@ -42,8 +42,11 @@ The primary goal of LibGo (also known as BookCourier) is to simplify the book bo
 
 ## Tech Stack
 **Frontend:** React.js · Tailwind CSS · DaisyUI
+<br>
 **Backend:** Node.js · Express.js
+<br>
 **Database:** MongoDB
+<br>
 **Tools:** Vite · Firebase · JWT · Axios
 
 ---
