@@ -117,5 +117,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 ## Contact
 
 **Live URL:** [Live Site](https://lib-go-5abe2.web.app/)
-**Email:** [username](gulamrasulrahim23@gmail.com)
+<br>
+**Email:** [Gulam Rasul](gulamrasulrahim23@gmail.com)
+<br>
 **Portfolio:** [Portfolio](https://portfolio-six-flame-xjdvqk020y.vercel.app)
