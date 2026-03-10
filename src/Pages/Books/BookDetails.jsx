@@ -7,6 +7,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import NotFound from "../../Components/NotFound";
+import useRole from "../../hooks/useRole";
 
 const BookDetails = () => {
   const axiosSecure = useAxiosSecure();
@@ -15,6 +16,7 @@ const BookDetails = () => {
   const { id } = useParams();
   const modalRef = useRef(null);
   const navigate = useNavigate();
+  const { role } = useRole();
   const { data: book = [], isError, isLoading } = useQuery({
     queryKey: ["book-details", id],
     queryFn: async () => {
@@ -28,7 +30,7 @@ const BookDetails = () => {
       setActiveImage(book.bookImage);
     }
   }, [book]);
-  const allImages = [ ...(book?.galleryImages || [])].filter(Boolean);
+  const allImages = [...(book?.galleryImages || [])].filter(Boolean);
 
   const {
     register,
@@ -48,20 +50,20 @@ const BookDetails = () => {
   const duplicateRegion = addressPromise.map((r) => r.region);
   const regions = [...new Set(duplicateRegion)];
   const [isOpen, setIsOpen] = useState(false);
-  const handleModal = () =>{
+  const handleModal = () => {
     if (!user) {
-    Swal.fire({
-      title: "Login Required",
-      text: "Please login to buy this book.",
-      icon: "warning",
-      confirmButtonText: "Login",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        navigate("/login", { state: `/book-details/${id}`  });
-      }
-    });
-    return;
-  }
+      Swal.fire({
+        title: "Login Required",
+        text: "Please login to buy this book.",
+        icon: "warning",
+        confirmButtonText: "Login",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login", { state: `/book-details/${id}` });
+        }
+      });
+      return;
+    }
     setIsOpen(true)
   };
   const handleModalClose = () => {
@@ -72,18 +74,18 @@ const BookDetails = () => {
   const handleWishlist = () => {
 
     if (!user) {
-    Swal.fire({
-      title: "Login Required",
-      text: "Please login to add this book to your wishlist.",
-      icon: "info",
-      confirmButtonText: "Login",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        navigate("/login", { state:`/book-details/${id}`});
-      }
-    });
-    return;
-  }
+      Swal.fire({
+        title: "Login Required",
+        text: "Please login to add this book to your wishlist.",
+        icon: "info",
+        confirmButtonText: "Login",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login", { state: `/book-details/${id}` });
+        }
+      });
+      return;
+    }
 
     const wishlistData = {
       wishlistId: book._id,
@@ -187,10 +189,10 @@ const BookDetails = () => {
   return (
     <div className="bg-base-100 py-19 max-w-7xl mx-auto px-4 md:px-8">
       <title>LibGo_Book_Details</title>
-      <div className="pb-6 flex md:flex-row flex-col ">      
+      <div className="pb-6 flex md:flex-row flex-col ">
         <div className="md:w-3/4 flex flex-col gap-4 ">
-          
-         
+
+
           <figure className="w-auto flex items-center justify-center h-[400px] sm:h-[500px] md:h-[442px] lg:h-[550px] rounded-xl overflow-hidden shadow-md relative border border-base-200 bg-base-200/50">
             <img
               src={activeImage || book?.bookImage}
@@ -199,18 +201,17 @@ const BookDetails = () => {
             />
           </figure>
 
-        
+
           {allImages.length > 1 && (
             <div className="inline-flex gap-4 overflow-x-auto pl-1 py-2 ">
               {allImages.map((img, index) => (
                 <button
                   key={index}
                   onClick={() => setActiveImage(img)}
-                  className={`h-24 p-2 lg:h-28 flex items-center justify-center rounded-md cursor-pointer overflow-hidden border-2 transition-all duration-300 ${
-                    activeImage === img
-                      ? "border-primary scale-105 shadow-md shadow-primary/20"
-                      : "border-transparent opacity-60 hover:opacity-100 hover:scale-105"
-                  }`}
+                  className={`h-24 p-2 lg:h-28 flex items-center justify-center rounded-md cursor-pointer overflow-hidden border-2 transition-all duration-300 ${activeImage === img
+                    ? "border-primary scale-105 shadow-md shadow-primary/20"
+                    : "border-transparent opacity-60 hover:opacity-100 hover:scale-105"
+                    }`}
                 >
                   <img
                     src={img}
@@ -253,11 +254,14 @@ const BookDetails = () => {
                 <div>
                   <button
                     onClick={handleModal}
+                    disabled={role === "librarian" || role === "admin"}
                     className="btn btn-primary hover:btn-secondary w-full shadow-lg shadow-primary/30 mb-3"
                   >
                     Buy Now
                   </button>
-                  <button onClick={handleWishlist} className="btn btn-outline w-full text-base-content hover:bg-secondary">
+                  <button onClick={handleWishlist}
+                    disabled={role === "librarian" || role === "admin"}
+                    className="btn btn-outline w-full text-base-content hover:bg-secondary">
                     Add to Wishlist
                   </button>
                 </div>

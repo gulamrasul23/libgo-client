@@ -154,7 +154,7 @@ const MyProfile = () => {
     });
   };
 
-  if (isLoading) {
+  if (isLoading || !role) {
     return (
       <div className="min-h-[calc(100vh-285px)] flex items-center justify-center bg-base-100">
         <span className="loading loading-bars loading-xl "></span>
@@ -163,7 +163,7 @@ const MyProfile = () => {
   }
 
   if (role === "admin") {
-    return <Navigate to="/dashboard/admin-overview" replace></Navigate>;
+    return <Navigate to="/dashboard/admin-profile" replace></Navigate>;
   }
 
   return (

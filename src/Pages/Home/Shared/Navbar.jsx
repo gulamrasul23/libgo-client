@@ -24,14 +24,30 @@ const Navbar = () => {
   };
 
   const handleLogOut = () => {
-    logOutUser()
-      .then(() => {
-        Swal.fire({
-          title: "Logout..!",
-          text: "You logged out successfully.",
-          icon: "info",
-        });
-      })
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Are you sure you want to log out?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Logout!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logOutUser()
+
+          .then(() => {
+            window.location.href = '/login';
+            Swal.fire({
+              title: "Logout..!",
+              text: "You logged out successfully.",
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+            });
+          });
+      }
+    })
       .catch((error) => {
         Swal.fire({
           title: "Something Went Wrong...!",
@@ -209,11 +225,7 @@ const Navbar = () => {
                   role="button"
                   className="h-9 w-9 ring ring-primary ring-offset-primary ring-offset-1 rounded-full"
                 >
-                  {/* <Link
-                    to="/"
-                    className="cursor-pointer"
-                    data-tip={user.displayName}
-                  > */}
+
                   {user?.photoURL ? (
                     <img
                       src={user?.photoURL}
@@ -229,7 +241,7 @@ const Navbar = () => {
                       className=" object-cover rounded-full  "
                     ></img>
                   )}
-                  {/* </Link> */}
+
                 </div>
                 <div className="relative">
                   <div
@@ -239,24 +251,24 @@ const Navbar = () => {
                     <div className="card-body font-medium">
                       <p className="text-[14px]">{user.displayName}</p>
                       <p>{user.email}</p>
-                      <Link
+                      <button
                         onClick={handleLogOut}
-                        className="btn btn-primary hover:btn-secondary"
-                        to="/"
+                        className="btn btn-error text-white hover:btn-secondary"
+
                       >
                         Log Out
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
-              <Link
+              <button
                 onClick={handleLogOut}
-                className="btn btn-sm sm:btn-md btn-primary hover:btn-secondary ml-2 sm:ml-4"
-                to="/"
+                className="btn btn-sm sm:btn-md btn-error text-white hover:btn-secondary ml-2 sm:ml-4"
+
               >
                 Log Out
-              </Link>
+              </button>
             </>
           ) : (
             <>

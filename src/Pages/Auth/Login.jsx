@@ -6,6 +6,7 @@ import { useForm, useWatch } from "react-hook-form";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 
+
 const Login = () => {
   const {
     register,
@@ -16,7 +17,8 @@ const Login = () => {
     setValue,
   } = useForm();
   const axiosSecure = useAxiosSecure();
-  const { loginGoogle, loginUser } = useAuth();
+
+  const { loginGoogle, loginUser, } = useAuth();
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -26,20 +28,20 @@ const Login = () => {
   });
 
   const handleAdminDemoLogin = () => {
-    setValue("email", "gulamrasulrahim23@gmail.com"); 
-    setValue("password", "Abc12345"); 
-    handleLogin({ 
-      email: "gulamrasulrahim23@gmail.com", 
-      password: "Abc12345" 
-    });  
+    setValue("email", "gulamrasulrahim23@gmail.com");
+    setValue("password", "Abc12345");
+    handleLogin({
+      email: "gulamrasulrahim23@gmail.com",
+      password: "Abc12345"
+    });
   };
 
   const handleLibrarianDemoLogin = () => {
     setValue("email", "gulamrasul194914@gmail.com");
     setValue("password", "Def12345");
-    handleLogin({ 
-      email: "gulamrasul194914@gmail.com", 
-      password: "Def12345" 
+    handleLogin({
+      email: "gulamrasul194914@gmail.com",
+      password: "Def12345"
     });
   };
 
@@ -96,7 +98,7 @@ const Login = () => {
           timer: 1500,
           showConfirmButton: false,
         });
-        navigate(location.state || "/");
+        navigate(location.state || "/", { replace: true });
         reset();
       })
       .catch((error) => {
@@ -194,7 +196,7 @@ const Login = () => {
               <div className="flex gap-2 mt-4 mb-2">
                 <button
                   type="button"
-                  disabled ={loading}
+                  disabled={loading}
                   onClick={handleAdminDemoLogin}
                   className="btn btn-sm btn-outline btn-primary flex-1 text-xs"
                 >
@@ -202,15 +204,15 @@ const Login = () => {
                 </button>
                 <button
                   type="button"
-                  disabled ={loading}
+                  disabled={loading}
                   onClick={handleLibrarianDemoLogin}
                   className="btn btn-sm btn-outline btn-secondary flex-1 text-xs"
                 >
                   Demo User
                 </button>
               </div>
-              
-              <button type="submit" disabled ={loading} className="btn btn-primary mt-4">{loading ? (
+
+              <button type="submit" disabled={loading} className="btn btn-primary mt-4">{loading ? (
                 <span className="loading loading-spinner"></span>
               ) : (
                 "Login"
@@ -225,7 +227,7 @@ const Login = () => {
               onClick={handleGoogleIn}
               disabled={loading}
               className={`btn bg-white text-black border-primary/50  ${loading ? "opacity-30 cursor-not-allowed" : ""}`}
-            > 
+            >
               <svg
                 aria-label="Google logo"
                 width="16"

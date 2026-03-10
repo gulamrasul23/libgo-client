@@ -5,7 +5,6 @@ import { FaFileInvoice } from "react-icons/fa";
 import { BiBookAdd } from "react-icons/bi";
 import { MdManageAccounts } from "react-icons/md";
 import { TiHomeOutline } from "react-icons/ti";
-import { MdOutlineSettings } from "react-icons/md";
 import { GoSidebarCollapse } from "react-icons/go";
 import { PiListHeartFill } from "react-icons/pi";
 import { LuSwatchBook } from "react-icons/lu";
@@ -13,13 +12,18 @@ import { FaUsers } from "react-icons/fa";
 import { FaShopify } from "react-icons/fa";
 import { FaBook } from "react-icons/fa";
 import { RiKanbanView } from "react-icons/ri";
+import { IoIosLogOut } from "react-icons/io";
 import useRole from "../hooks/useRole";
 import ScrollToTop from "../Components/ScrollToTop";
+import Swal from "sweetalert2";
+import useAuth from "../hooks/useAuth";
 
 const DashboardLayout = () => {
 
   const { role } = useRole();
   const location = useLocation();
+
+  const { logOutUser } = useAuth();
   const [theme, setTheme] = useState(
     localStorage.getItem("theme") || "dark"
   );
@@ -36,6 +40,41 @@ const DashboardLayout = () => {
     }
   };
 
+  const handleLogOut = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Are you sure you want to log out?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Log Out !"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logOutUser()
+
+          .then(() => {
+            window.location.href = '/login';
+            Swal.fire({
+              title: "Logout..!",
+              text: "You logged out successfully.",
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+            });
+          });
+      }
+    })
+      .catch((error) => {
+        Swal.fire({
+          title: "Something Went Wrong...!",
+          text: `${error.message}`,
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
+      });
+  };
+
   const getTitle = (pathname) => {
     const pageTitles = {
       "/dashboard": "My Profile",
@@ -48,6 +87,7 @@ const DashboardLayout = () => {
       "/dashboard/users": "Manage Users",
       "/dashboard/manage-books": "Manage Books",
       "/dashboard/admin-profile": "My Profile",
+      "/dashboard/admin-overview": "Overview"
     };
 
     if (/^\/dashboard\/update-book\/.+/.test(pathname)) {
@@ -69,7 +109,7 @@ const DashboardLayout = () => {
           <label
             htmlFor="my-drawer-4"
             aria-label="open sidebar"
-            className="btn btn-square btn-ghost flex justify-between"
+            className="btn btn-square btn-ghost flex justify-center"
           >
 
             <GoSidebarCollapse size={25} />
@@ -182,30 +222,19 @@ const DashboardLayout = () => {
           className="drawer-overlay"
         ></label>
         <div className="flex min-h-full flex-col items-start bg-base-300 is-drawer-close:w-14 is-drawer-open:w-50">
-          <ul className="menu w-full grow">
+          <ul className="menu w-full grow gap-2">
             <li>
               <NavLink
                 to="/"
                 data-tip="Homepage"
-                className="is-drawer-close:tooltip is-drawer-close:tooltip-right hover:bg-base-content/10 pt-3.5 font-bold"
+                className="is-drawer-close:tooltip is-drawer-close:tooltip-right hover:bg-base-content/10 pt-3.5"
               >
                 <TiHomeOutline size={22} />
-                <span className="is-drawer-close:hidden">Homepage</span>
+                <span className="is-drawer-close:hidden font-bold">Homepage</span>
               </NavLink>
             </li>
-            {role ==="admin" ?<li>
-              <NavLink
-                to="/dashboard/admin-profile"
-                end
-                data-tip="My Profile"
-                className={({ isActive }) =>
-                  `is-drawer-close:tooltip is-drawer-close:tooltip-right hover:bg-base-content/10 ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : ""}`
-                }
-              >
-                <MdManageAccounts size={22} />
-                <span className="is-drawer-close:hidden font-bold ">My Profile</span>
-              </NavLink>
-            </li> : <li>
+
+            {(role === "customer" || role === "librarian") && <li>
               <NavLink
                 to="/dashboard"
                 end
@@ -217,9 +246,9 @@ const DashboardLayout = () => {
                 <MdManageAccounts size={22} />
                 <span className="is-drawer-close:hidden font-bold">My Profile</span>
               </NavLink>
-            </li> }
+            </li>}
 
-            {<>
+            {role === "customer" && <>
               <li>
                 <NavLink
                   to="/dashboard/my-order"
@@ -299,6 +328,19 @@ const DashboardLayout = () => {
             {role === 'admin' && <>
               <li>
                 <NavLink
+                  to="/dashboard/admin-profile"
+                  end
+                  data-tip="My Profile"
+                  className={({ isActive }) =>
+                    `is-drawer-close:tooltip is-drawer-close:tooltip-right hover:bg-base-content/10 ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : ""}`
+                  }
+                >
+                  <MdManageAccounts size={22} />
+                  <span className="is-drawer-close:hidden font-bold ">My Profile</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
                   to="/dashboard/admin-overview"
                   data-tip="Overview"
                   end
@@ -337,11 +379,12 @@ const DashboardLayout = () => {
             </>}
             <li>
               <button
+                onClick={handleLogOut}
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="Settings"
+                data-tip="Log Out"
               >
-                <MdOutlineSettings size={22} />
-                <span className="is-drawer-close:hidden font-bold">Settings</span>
+                <IoIosLogOut size={22} />
+                <span className="is-drawer-close:hidden font-bold">Log Out</span>
               </button>
             </li>
           </ul>
