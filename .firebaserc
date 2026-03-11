@@ -1,5 +1,7 @@
 {
   "projects": {
     "default": "lib-go-5abe2"
-  }
+  },
+  "targets": {},
+  "etags": {}
 }

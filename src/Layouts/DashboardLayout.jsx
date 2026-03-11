@@ -5,6 +5,9 @@ import { FaFileInvoice } from "react-icons/fa";
 import { BiBookAdd } from "react-icons/bi";
 import { MdManageAccounts } from "react-icons/md";
 import { TiHomeOutline } from "react-icons/ti";
+import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
+import { PiListHeart } from "react-icons/pi";
+import logo from '../assets/logo11.png'
 import { GoSidebarCollapse } from "react-icons/go";
 import { PiListHeartFill } from "react-icons/pi";
 import { LuSwatchBook } from "react-icons/lu";
@@ -17,6 +20,7 @@ import useRole from "../hooks/useRole";
 import ScrollToTop from "../Components/ScrollToTop";
 import Swal from "sweetalert2";
 import useAuth from "../hooks/useAuth";
+import Logo from "../Components/Logo";
 
 const DashboardLayout = () => {
 
@@ -223,15 +227,21 @@ const DashboardLayout = () => {
         ></label>
         <div className="flex min-h-full flex-col items-start bg-base-300 is-drawer-close:w-14 is-drawer-open:w-50">
           <ul className="menu w-full grow gap-2">
-            <li>
+            <li className="pb-6 is-drawer-close:pb-0">
               <NavLink
                 to="/"
-                data-tip="Homepage"
+                data-tip="LibGo-Home"
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right hover:bg-base-content/10 pt-3.5"
               >
-                <TiHomeOutline size={22} />
-                <span className="is-drawer-close:hidden font-bold">Homepage</span>
+                <div className="max-w-12">
+                  <img src={logo} alt="Logo" />
+                </div>
+                <h1 className='font-bold text-xl is-drawer-close:hidden'><span className='text-[#0D9470] '>Lib</span><span className='text-[#f78d20]'>Go</span></h1>
               </NavLink>
+            </li>
+
+            <li className="is-drawer-close:hidden pl-3 text-base-content/60 uppercase font-bold text-[12px]">
+              {role}
             </li>
 
             {(role === "customer" || role === "librarian") && <li>
@@ -269,7 +279,7 @@ const DashboardLayout = () => {
                     `is-drawer-close:tooltip is-drawer-close:tooltip-right hover:bg-base-content/10 ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : ""}`
                   }
                 >
-                  <FaFileInvoice size={22} />
+                  <LiaFileInvoiceDollarSolid size={23} />
                   <span className="is-drawer-close:hidden font-bold">My Invoice</span>
                 </NavLink>
               </li>
@@ -281,7 +291,7 @@ const DashboardLayout = () => {
                     `is-drawer-close:tooltip is-drawer-close:tooltip-right hover:bg-base-content/10 ${isActive ? "underline decoration-2 underline-offset-3 text-primary" : ""}`
                   }
                 >
-                  <PiListHeartFill size={24} />
+                  <PiListHeart size={24} />
                   <span className="is-drawer-close:hidden font-bold">My Wishlist</span>
                 </NavLink>
               </li>
