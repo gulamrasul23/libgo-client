@@ -28,20 +28,20 @@ const Login = () => {
   });
 
   const handleAdminDemoLogin = () => {
-    setValue("email", "gulamrasulrahim23@gmail.com");
-    setValue("password", "Abc12345");
+    setValue("email", "demoadmin@gmail.com");
+    setValue("password", "Xyz12345");
     handleLogin({
-      email: "gulamrasulrahim23@gmail.com",
-      password: "Abc12345"
+      email: "demoadmin@gmail.com",
+      password: "Xyz12345"
     });
   };
 
   const handleLibrarianDemoLogin = () => {
-    setValue("email", "gulamrasul194914@gmail.com");
-    setValue("password", "Def12345");
+    setValue("email", "demouser@gmail.com");
+    setValue("password", "Xyz12345");
     handleLogin({
-      email: "gulamrasul194914@gmail.com",
-      password: "Def12345"
+      email: "demouser@gmail.com",
+      password: "Xyz12345"
     });
   };
 
