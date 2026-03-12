@@ -54,7 +54,7 @@ The primary goal of LibGo (also known as BookCourier) is to simplify the book bo
 ## Dependencies
 ```json
 {
-  "react-router-dom": "^6.x",
+  "react-router": "^6.x",
   "firebase": "^10.x",
   "axios": "^1.x",
   "react-hook-form": "^7.x",
@@ -68,7 +68,7 @@ The primary goal of LibGo (also known as BookCourier) is to simplify the book bo
 1. Clone the repo and install dependencies:
 
 ```bash
-git clone [https://github.com/gulamrasul23/libgo-client.git](https://github.com/gulamrasul23/libgo-client.git)
+git clone https://github.com/gulamrasul23/libgo-client.git
 cd libgo-client
 npm install
 ```
